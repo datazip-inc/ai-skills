@@ -1,0 +1,56 @@
+---
+name: olake-<area>-<name>        # must match the folder name
+description: "<What the skill does, in one sentence.> Use when <triggers - user intent, source/destination
+  names, cloud variants, error strings the agent may see>."   # quote it: a ': ' inside breaks YAML
+metadata:
+  parent: olake-protocol          # or olake-driver-abstract / olake-destination-abstract
+  olake_version: vX.Y.Z           # last release this skill was verified against
+  status: experimental            # stable | experimental
+---
+
+# <Title>
+
+## When to use
+
+- <Trigger 1>
+- <Trigger 2>
+- Not covered: <topic> → load `<sibling-skill>`.
+
+## Inputs to collect
+
+Ask only for what is missing. Never echo secrets back.
+
+| Input | Example | Where it comes from |
+| --- | --- | --- |
+| <input> | `<example>` | <source> |
+
+## Prerequisites
+
+- [ ] <Prerequisite>. Details: [references/prerequisites.md](references/prerequisites.md)
+- [ ] Run `scripts/verify_<name>.sh` and confirm it passes.
+
+## Steps
+
+1. <One command, config snippet or UI action per step.>
+2. <Next step.>
+
+## Verify
+
+- <Concrete success signal: row count, `stats.json`, query on the destination.>
+
+## Common errors
+
+| Error (verbatim) | Cause | Fix |
+| --- | --- | --- |
+| `<exact log line>` | <cause> | <fix> |
+
+Full list: [references/troubleshooting.md](references/troubleshooting.md)
+
+## Next
+
+- <Which skill to load next and when.>
+
+## Rules
+
+- Use placeholders for secrets (`<PASSWORD>`); never print them.
+- Confirm with the user before destructive actions (dropping a replication slot, clearing state, deleting tables).

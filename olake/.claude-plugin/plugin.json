@@ -1,0 +1,13 @@
+{
+  "name": "olake",
+  "description": "Agent skills to deploy, run, extend and troubleshoot OLake.",
+  "skills": [
+    "./olake-protocol",
+    "./olake-troubleshoot",
+    "./deploy/olake-deploy-docker-compose",
+    "./drivers/olake-driver-abstract",
+    "./drivers/olake-driver-postgres",
+    "./destination/olake-destination-abstract",
+    "./destination/olake-destination-iceberg"
+  ]
+}
