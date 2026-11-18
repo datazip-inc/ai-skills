@@ -1,0 +1,14 @@
+{
+  "name": "olake",
+  "version": "0.1.0",
+  "description": "Run OLake end to end: deploy, connect sources and destinations, sync, verify and troubleshoot.",
+  "author": {
+    "name": "Datazip",
+    "url": "https://github.com/datazip-inc"
+  },
+  "homepage": "https://olake.io",
+  "repository": "https://github.com/datazip-inc/ai-skills",
+  "skills": [
+    "./olake-protocol"
+  ]
+}

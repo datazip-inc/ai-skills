@@ -1,0 +1,17 @@
+{
+  "name": "olake-ai-skills",
+  "owner": {
+    "name": "Datazip",
+    "url": "https://github.com/datazip-inc"
+  },
+  "metadata": {
+    "description": "Agent skills to deploy, run, extend and troubleshoot OLake."
+  },
+  "plugins": [
+    {
+      "name": "olake",
+      "source": "./olake",
+      "description": "Run OLake end to end: deploy, connect sources and destinations, sync, verify and troubleshoot."
+    }
+  ]
+}
