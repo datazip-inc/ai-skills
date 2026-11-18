@@ -1,6 +1,6 @@
 # ai-skills
 
-Agent skills for [OLake](https://github.com/datazip-inc/olake), written in the open
+Agent skills for [OLake](https://github.com/datazip-inc/olake-go), written in the open
 [`SKILL.md`](https://agentskills.io) format used by Claude Code, Cursor, Codex, Cortex Code and others.
 
 The skills cover two uses:
@@ -30,7 +30,7 @@ on MinIO".
 
 ## Skill map
 
-The `olake/` folder mirrors the [olake repo](https://github.com/datazip-inc/olake) layout.
+The `olake/` folder mirrors the [olake-go repo](https://github.com/datazip-inc/olake-go) layout.
 
 | Folder | Skill | What it does |
 | --- | --- | --- |
@@ -40,6 +40,7 @@ The `olake/` folder mirrors the [olake repo](https://github.com/datazip-inc/olak
 | `olake/destination/olake-destination-abstract/` | `olake-destination-abstract` | Shared writer behaviour: normalization, partitioning, writer errors |
 | `olake/destination/olake-destination-iceberg/` | `olake-destination-iceberg` | Iceberg destination: catalogs, storage, deletes |
 | `olake/deploy/olake-deploy-docker-compose/` | `olake-deploy-docker-compose` | Run OLake locally with docker compose |
+| `olake/deploy/olake-deploy-helm/` | `olake-deploy-helm` | Run OLake on Kubernetes with the Helm chart |
 | `olake/olake-troubleshoot/` | `olake-troubleshoot` | Logs, stage triage, error to fix |
 
 `olake/features/` holds cross-cutting feature skills, and `olake/experimental/` holds skills for features
@@ -49,7 +50,12 @@ that are on `staging` and not yet released.
 
 1. Copy `template/SKILL.md.tmpl` to `olake/<group>/<skill-name>/SKILL.md`. The folder name must match
    `name` in the frontmatter.
-2. Add the skill path to `olake/.claude-plugin/plugin.json`.
+2. Add the skill path to `olake/.claude-plugin/plugin.json` once it is written. Drafts (`TODO` in
+   `description`) stay out of it, so they do not ship.
+
+`OLAKE_VERSION` at the repo root is the one
+[olake-go release](https://github.com/datazip-inc/olake-go/releases) every skill is verified against.
+After re-checking the skills against a new release, bump it there; no skill carries its own version.
 3. Run the checks:
 
    ```bash

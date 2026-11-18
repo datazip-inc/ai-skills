@@ -2,15 +2,17 @@
 """Validate every skill in the repo.
 
 Checks, per SKILL.md:
-  - frontmatter parses as YAML and has name, description, metadata.olake_version, metadata.status
+  - frontmatter parses as YAML and has name, description, metadata.status
   - name matches the folder, is kebab-case, at most 64 chars, and is unique
   - description is at most 1024 chars
   - metadata.parent, when set, names an existing skill
-  - the skill is listed in its product's .claude-plugin/plugin.json
+  - a finished skill is listed in its product's .claude-plugin/plugin.json; a draft (TODO in
+    description) is not, so stubs never ship
   - SKILL.md is at most MAX_LINES lines
   - stable skills have every required section
 
-Also checks that every plugin.json skill path and marketplace.json plugin source exists.
+Also checks that every plugin.json skill path and marketplace.json plugin source exists, and that
+OLAKE_VERSION (the one OLake release every skill is verified against) is a vX.Y.Z tag.
 Exits 1 on any error.
 """
 
@@ -23,6 +25,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 MAX_LINES = 200
+VERSION_RE = re.compile(r"^v\d+\.\d+\.\d+$")
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 STATUSES = {"stable", "experimental"}
 REQUIRED_SECTIONS = [
@@ -84,8 +87,6 @@ def check_skill(path, data, text):
     status = meta.get("status")
     if status not in STATUSES:
         error(path, f"metadata.status must be one of {sorted(STATUSES)}, got {status!r}")
-    if not meta.get("olake_version"):
-        error(path, "missing metadata.olake_version")
 
     lines = text.count("\n") + 1
     if lines > MAX_LINES:
@@ -100,7 +101,11 @@ def check_skill(path, data, text):
     return name, meta.get("parent")
 
 
-def check_plugin(plugin_dir, skill_dirs):
+def is_draft(data):
+    return "TODO" in str(data.get("description", ""))
+
+
+def check_plugin(plugin_dir, skill_dirs, draft_dirs):
     manifest = plugin_dir / ".claude-plugin" / "plugin.json"
     try:
         listed = json.loads(manifest.read_text(encoding="utf-8")).get("skills", [])
@@ -114,8 +119,12 @@ def check_plugin(plugin_dir, skill_dirs):
             error(manifest, f"skills entry '{entry}' has no SKILL.md")
         listed_dirs.add(target)
     for skill_dir in skill_dirs:
-        if skill_dir.resolve() not in listed_dirs:
-            rel = "./" + str(skill_dir.relative_to(plugin_dir))
+        rel = "./" + str(skill_dir.relative_to(plugin_dir))
+        listed_here = skill_dir.resolve() in listed_dirs
+        if skill_dir in draft_dirs:
+            if listed_here:
+                error(manifest, f"skill '{rel}' is a draft (TODO); remove it from skills until it is written")
+        elif not listed_here:
             error(manifest, f"skill '{rel}' is not listed in skills")
 
 
@@ -134,6 +143,16 @@ def check_marketplace():
             error(manifest, f"plugin '{plugin.get('name')}' source '{source}' has no .claude-plugin/plugin.json")
 
 
+def check_olake_version():
+    path = ROOT / "OLAKE_VERSION"
+    if not path.is_file():
+        error(path, "missing; it holds the OLake release the skills are verified against, e.g. v1.2.0")
+        return
+    version = path.read_text(encoding="utf-8").strip()
+    if not VERSION_RE.match(version):
+        error(path, f"must be one vX.Y.Z tag, got {version!r}")
+
+
 def main():
     plugin_dirs = [p.parent.parent for p in ROOT.glob("*/.claude-plugin/plugin.json")]
     names = {}
@@ -141,10 +160,13 @@ def main():
 
     for plugin_dir in plugin_dirs:
         skill_files = sorted(plugin_dir.rglob("SKILL.md"))
+        draft_dirs = set()
         for path in skill_files:
             data, text = read_frontmatter(path)
             if data is None:
                 continue
+            if is_draft(data):
+                draft_dirs.add(path.parent)
             name, parent = check_skill(path, data, text)
             if name:
                 if name in names:
@@ -152,13 +174,14 @@ def main():
                 names[name] = path
             if parent:
                 parents.append((path, parent))
-        check_plugin(plugin_dir, [p.parent for p in skill_files])
+        check_plugin(plugin_dir, [p.parent for p in skill_files], draft_dirs)
 
     for path, parent in parents:
         if parent not in names:
             error(path, f"metadata.parent '{parent}' is not an existing skill")
 
     check_marketplace()
+    check_olake_version()
 
     if errors:
         print("\n".join(errors))

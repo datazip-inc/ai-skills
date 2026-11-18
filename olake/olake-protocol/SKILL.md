@@ -2,7 +2,6 @@
 name: olake-protocol
 description: "Run OLake end to end for any source and destination: check the connections, discover streams, pick streams and sync modes, sync, verify, rerun with state, and clear. Use when the user wants to set up, try, or run OLake (a POC, 'replicate my Postgres/MySQL/MongoDB/... to Iceberg or Parquet'), run a sync with the OLake CLI or UI, or asks about streams files, state.json, sync flags or rerunning a sync. Entry point for every other OLake skill."
 metadata:
-  olake_version: v1.1.2
   status: experimental
 ---
 
@@ -16,13 +15,6 @@ source, destination and deploy skills for the details.
 - The user wants to set up or try OLake, or replicate a database or stream into Iceberg or Parquet.
 - The user wants to run `check`, `discover`, `sync` or `clear-destination`, or rerun a sync.
 - The user asks about `available_streams.json`, `selected_streams.json`, `state.json` or sync flags.
-- Not covered here:
-  - Source prerequisites and config fields → `olake-driver-<source>` (for example `olake-driver-postgres`).
-  - Sync mode behaviour (backfill, CDC, incremental, cursors) → `olake-driver-abstract`.
-  - Catalog, storage and writer config → `olake-destination-<type>` (for example `olake-destination-iceberg`).
-  - Normalization, partitioning, writer errors → `olake-destination-abstract`.
-  - Bringing up the OLake UI → `olake-deploy-docker-compose`.
-  - A failed step → `olake-troubleshoot`.
 
 ## Inputs to collect
 
@@ -38,7 +30,7 @@ Ask only for what is missing. Check the combination against
 | Catalog and storage (Iceberg) | REST catalog on MinIO | User. Field list in the destination skill. |
 | Streams | `public.orders` | User, after discover. |
 | Sync mode per stream | `cdc` | User. Default `full_refresh` if the user has no preference. |
-| OLake version | `v1.1.2` | Image tag. Use a pinned tag, not `latest`, for anything beyond a first try. |
+| OLake version | latest release | Image tag. Look up the latest release (see [references/cli.md](references/cli.md#image)) and pin it, not `latest`, for anything beyond a first try. |
 | Config folder (CLI) | `/abs/path/olake-run/` | User. Holds configs and every file OLake writes. |
 
 ## Prerequisites

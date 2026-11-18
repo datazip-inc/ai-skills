@@ -1,6 +1,7 @@
 # CLI flags
 
-Flags apply to every command unless noted. Source: `protocol/root.go` in the olake repo.
+Flags apply to every command unless noted. Source:
+[`protocol/root.go`](https://github.com/datazip-inc/olake-go/blob/master/protocol/root.go).
 
 | Flag | Default | Use |
 | --- | --- | --- |
@@ -22,3 +23,4 @@ Flags apply to every command unless noted. Source: `protocol/root.go` in the ola
 | `--no-save` | `false` | Do not write streams, state, stats or log files. |
 | `--convert-streams` | `false` | `discover` only: convert `--streams` into the two-file format. |
 | `--difference-available-streams`, `--difference-selected-streams` | | `discover` only: compare with the current pair and write `difference_*.json`. |
+| `--catalog <file>`, `--difference <file>` | | Deprecated aliases for `--streams` and the old single-file compare. Do not use. |
