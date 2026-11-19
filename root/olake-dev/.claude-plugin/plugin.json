@@ -1,0 +1,24 @@
+{
+  "name": "olake-dev",
+  "description": "For developers: build olake, olake-ui and olake-helm from chosen branches, deploy them together and test a feature or change end to end.",
+  "skills": [
+    "./olake-e2e-test"
+  ],
+  "userConfig": {
+    "olake_go_path": {
+      "type": "directory",
+      "title": "olake repo path",
+      "description": "Optional. Your local clone of github.com/datazip-inc/olake (drivers and writers), used only to test local changes. Pushed branches are fetched automatically."
+    },
+    "olake_ui_path": {
+      "type": "directory",
+      "title": "olake-ui repo path",
+      "description": "Optional. Your local clone of github.com/datazip-inc/olake-ui (UI, API server, docker compose files), used only to test local changes. Pushed branches are fetched automatically."
+    },
+    "olake_helm_path": {
+      "type": "directory",
+      "title": "olake-helm repo path",
+      "description": "Optional. Your local clone of github.com/datazip-inc/olake-helm (worker and Helm chart), used only to test local changes. Pushed branches are fetched automatically."
+    }
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "olake",
+  "name": "olake-go",
   "description": "Agent skills to deploy, run, extend and troubleshoot OLake.",
   "skills": [
     "./olake-protocol",

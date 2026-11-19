@@ -16,7 +16,8 @@ Claude Code:
 
 ```text
 /plugin marketplace add datazip-inc/ai-skills
-/plugin install olake@olake-ai-skills
+/plugin install olake-go@olake-ai-skills            # run OLake
+/plugin install olake-dev@olake-ai-skills          # test OLake code changes across repos (developers)
 ```
 
 Any agent that supports the skills CLI:
@@ -30,26 +31,39 @@ on MinIO".
 
 ## Skill map
 
-The `olake/` folder mirrors the [olake repo](https://github.com/datazip-inc/olake) layout.
+Each product plugin is a top-level folder that mirrors one OLake repo.
+Developer tooling, which is not a product, lives under `root/`.
+
+| Plugin | For | Contents |
+| --- | --- | --- |
+| `olake-go/` | Users | Run OLake: drivers, destinations, deploy, troubleshoot. Mirrors the [olake repo](https://github.com/datazip-inc/olake) layout |
+| `root/olake-dev/` | Developers | `olake-e2e-test`: build olake, olake-ui and olake-helm from chosen branches, deploy them together and test a change end to end |
+| `olake-ui/` | Users and developers | Planned: run the OLake UI with docker compose; create sources, destinations and jobs in the UI or through the API; GitOps. Also what the other repos rely on from olake-ui |
+| `olake-helm/` | Users and developers | Planned: deploy OLake on Kubernetes with Helm (values, log storage, upgrade); how the worker runs jobs. Also what the other repos rely on from olake-helm |
+
+`olake-dev` has optional settings for the local paths of the three code repos. They are only needed to test local, unpushed changes; pushed branches are fetched automatically.
+
+Skills in `olake-go/`:
 
 | Folder | Skill | What it does |
 | --- | --- | --- |
-| `olake/olake-protocol/` | `olake-protocol` | Base skill: spec, check, discover, sync, clear and verify for any source and destination |
-| `olake/drivers/olake-driver-abstract/` | `olake-driver-abstract` | Shared source behaviour: sync modes, backfill, CDC, incremental, prerequisites |
-| `olake/drivers/olake-driver-postgres/` | `olake-driver-postgres` | Postgres source |
-| `olake/destination/olake-destination-abstract/` | `olake-destination-abstract` | Shared writer behaviour: normalization, partitioning, writer errors |
-| `olake/destination/olake-destination-iceberg/` | `olake-destination-iceberg` | Iceberg destination: catalogs, storage, deletes |
-| `olake/deploy/olake-deploy-docker-compose/` | `olake-deploy-docker-compose` | Run OLake locally with docker compose |
-| `olake/olake-troubleshoot/` | `olake-troubleshoot` | Logs, stage triage, error to fix |
+| `olake-go/olake-protocol/` | `olake-protocol` | Base skill: spec, check, discover, sync, clear and verify for any source and destination |
+| `olake-go/drivers/olake-driver-abstract/` | `olake-driver-abstract` | Shared source behaviour: sync modes, backfill, CDC, incremental, prerequisites |
+| `olake-go/drivers/olake-driver-postgres/` | `olake-driver-postgres` | Postgres source |
+| `olake-go/destination/olake-destination-abstract/` | `olake-destination-abstract` | Shared writer behaviour: normalization, partitioning, writer errors |
+| `olake-go/destination/olake-destination-iceberg/` | `olake-destination-iceberg` | Iceberg destination: catalogs, storage, deletes |
+| `olake-go/deploy/olake-deploy-docker-compose/` | `olake-deploy-docker-compose` | Run OLake locally with docker compose |
+| `olake-go/olake-troubleshoot/` | `olake-troubleshoot` | Logs, stage triage, error to fix |
 
-`olake/features/` holds cross-cutting feature skills, and `olake/experimental/` holds skills for features
+`olake-go/features/` holds cross-cutting feature skills, and `olake-go/experimental/` holds skills for features
 that are on `staging` and not yet released.
 
 ## Contributing
 
-1. Copy `template/SKILL.md.tmpl` to `olake/<group>/<skill-name>/SKILL.md`. The folder name must match
+1. Copy `template/SKILL.md.tmpl` to `<plugin>/<group>/<skill-name>/SKILL.md`. The folder name must match
    `name` in the frontmatter.
-2. Add the skill path to `olake/.claude-plugin/plugin.json`.
+2. Add the skill path to `<plugin>/.claude-plugin/plugin.json`. A new plugin also needs an entry in
+   `.claude-plugin/marketplace.json`: the checks only see plugins listed there.
 3. Run the checks:
 
    ```bash

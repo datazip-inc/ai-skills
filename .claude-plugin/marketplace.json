@@ -5,13 +5,18 @@
     "url": "https://github.com/datazip-inc"
   },
   "metadata": {
-    "description": "Agent skills to deploy, run, extend and troubleshoot OLake."
+    "description": "Agent skills to deploy, run, extend, test and troubleshoot OLake."
   },
   "plugins": [
     {
-      "name": "olake",
-      "source": "./olake",
+      "name": "olake-go",
+      "source": "./olake-go",
       "description": "Run OLake end to end: deploy, connect sources and destinations, sync, verify and troubleshoot."
+    },
+    {
+      "name": "olake-dev",
+      "source": "./root/olake-dev",
+      "description": "For developers: build olake, olake-ui and olake-helm from chosen branches, deploy them together and test a feature or change end to end."
     }
   ]
 }
