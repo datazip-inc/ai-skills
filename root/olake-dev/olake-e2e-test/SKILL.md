@@ -65,7 +65,7 @@ From here on, `<olake>`, `<olake-ui>` and `<olake-helm>` mean the directory each
 | Goal | Run the test. "Set up", "spin up" or "so I can test" with no test named: stack only, handed off as in step 4 |
 | What to test | From the user's message, as one sentence: the behaviour and where it shows |
 | Steps | Only those the change touches: check, discover, sync, rerun with state, schema evolution. "Full e2e" means all |
-| Environment | docker compose. Kubernetes (kind) when the change or the user needs it, with `<olake-helm>/helm/olake/README.md` and a values overlay |
+| Environment | docker compose. Kubernetes (kind) when the change touches the chart or the worker's Kubernetes mode, or the user asks for it |
 | Repos to build | Repos with a diff against `origin/staging` or uncommitted changes. If the change touches a contract another repo depends on, say so and build both. No repo changed: build all from the given refs |
 | Driver, source, destination | The driver the change touches, else `postgres`. Local test source and local Iceberg (JDBC catalog, MinIO) from the olake repo. External systems need credentials first |
 | Compare with staging | Only when the user asks whether a change breaks existing behaviour |
@@ -75,9 +75,9 @@ Tell the user in one short message what will run, whether the stack is reused, a
 ## 2. Preflight
 
 - `docker info` succeeds, free disk is at least 20 GB, and Docker memory is at least 7.5 GB (Docker Desktop's 8 GB setting reports about 7.65 GB).
-- No container, running or exited, holds a fixed name from the compose reference, and no heavy unrelated container is running. <!-- TODO[BEFORE_MERGE]: olake-ui#8 -->
+- No container, running or exited, holds a fixed name from the environment and test data references, and no heavy unrelated container is running.
   Remove exited ones the test needs gone; ask before stopping a running one.
-- The ports in the compose reference are free, or used by the stack being reused.
+- The ports in those references are free, or used by the stack being reused.
 - Every requested ref resolves, and every managed worktree sits at the SHA recorded for it.
 - For every local checkout built in place, save its changed files: `${CLAUDE_SKILL_DIR}/scripts/checkout-info.sh --snapshot <path> <run-dir>/snapshot-<repo>.tsv`.
 - Record `docker compose ls -a` and `docker volume ls -q`.
@@ -85,10 +85,10 @@ Tell the user in one short message what will run, whether the stack is reused, a
 
 ## 3. Build
 
-<!-- TODO: decided the image tag name -->
-Run tag: `v100.0.0-test-<git-sha>`, with `-dirty-<diff-hash>` appended when the build includes uncommitted changes (untracked files included).
+Run tag: `olake-dev-<git-sha>`, with `-dirty-<diff-hash>` appended when the build includes uncommitted changes (untracked files included).
 `${CLAUDE_SKILL_DIR}/scripts/checkout-info.sh <path>` prints it as `run_tag`, with `sha` and `diff_hash`; record all three in `stack.md`.
-`v100.0.0` is above every release, so every version check passes; a tag that is not a version number makes discover drop `--max-discover-threads`, and a low one such as `v0.0.0-dev` makes the worker refuse S3 log storage. <!-- TODO[BEFORE_MERGE]: olake#3, olake-helm#1 -->
+The tag names the code, not the stack: every code change gets a new tag, and the same code gets the same tag in any stack.
+It is not a semver version, so it is never taken for a release; the version checks skip it through `CUSTOM_DRIVER_VERSION` in the UI, and because it is not semver in the worker.
 An image that already exists with that tag and matching labels is reused, not rebuilt.
 
 | Image | Built from | Command |
@@ -100,24 +100,24 @@ An image that already exists with that tag and matching labels is reused, not re
 The worker image is published as both `olakego/ui-worker` and `olakego/k8s-worker`, so one build serves compose and Kubernetes.
 After a change in shared code, rebuild every image the test uses, not only the one the change seemed to target.
 Whenever the olake repo is built, also build `olakego/source-mysql:<tag>` from the same commit, unless the driver under test is mysql.
-The UI fetches the destination spec from `olakego/source-mysql` at the stack's version, whatever the source (known olake-ui issue, `GetDestinationSpec`). <!-- TODO[BEFORE_MERGE]: olake-ui#6 -->
+The UI fetches the destination spec from `olakego/source-mysql` at the stack's version, whatever the source (known olake-ui issue, `GetDestinationSpec`).
 Run builds in the background, write output to `<run-dir>/logs/build-<image>.log`, and poll its last lines.
-The UI and worker builds can run alongside the driver builds, but build the drivers of one olake checkout one at a time: each also compiles the Iceberg Java writer in the same folder, and two at once fail with `Non-readable POM`. <!-- TODO[BEFORE_MERGE]: olake#1 -->
+The UI and worker builds can run alongside the driver builds, but build the drivers of one olake checkout one at a time: each also compiles the Iceberg Java writer in the same folder, and two at once fail with `Non-readable POM`.
 
 Check, for each image: its `olake.test.sha` and `olake.test.diff` labels match the values recorded before the build; a build that silently did not run leaves an older image with the same tag.
-A build can edit files git tracks, such as `go.work.sum`: run `checkout-info.sh --compare <path> <run-dir>/snapshot-<repo>.tsv`, restore each `REVERT` file with `git -C <path> checkout -- <file>`, and report `ASK` and `NEW` files without touching them. <!-- TODO[BEFORE_MERGE]: olake#2 -->
+A build can edit files git tracks, such as `go.work.sum`: run `checkout-info.sh --compare <path> <run-dir>/snapshot-<repo>.tsv`, restore each `REVERT` file with `git -C <path> checkout -- <file>`, and report `ASK` and `NEW` files without touching them.
 
 ## 4. Deploy
 
-Follow the compose reference: [references/docker-compose.md](references/docker-compose.md).
-On Kubernetes, load the built images into kind (`kind load docker-image <image>:<tag>`) and install the chart with a values overlay in the run directory.
+Start the test source and destination: [references/test-data.md](references/test-data.md).
+Then the OLake stack, from the environment reference: [references/docker-compose.md](references/docker-compose.md), or [references/kind.md](references/kind.md) for Kubernetes.
 
-Check: the deploy gate in the compose reference passes, and Spark answers its first query.
-For a stack-only goal, or when the user keeps the stack, give them the handoff table in the compose reference, filled in for the stack.
+Check: the environment reference's deploy gate passes, and Spark answers its first query.
+For a stack-only goal, or when the user keeps the stack, give them the handoff rows of the environment and test data references, filled in for the stack.
 
 ## 5. Configure
 
-1. Seed the source with data sized for what is being tested; there is no fixed row count.
+1. Seed the source (test data reference) with data sized for what is being tested; there is no fixed row count.
    - Correctness, data types, values, schema: a handful of rows that cover every case, including NULL in each nullable column.
    - Speed, throughput, batching or memory: enough rows that the sync runs long enough to measure.
    - Behaviour that depends on volume (for example discover sampling or chunk boundaries): enough rows to cross that boundary, worked out from the code.
@@ -132,7 +132,7 @@ Check: seed row count confirmed, and every config key exists in the spec.
 
 ## 6. Run
 
-Run only the steps chosen at intake, in this order:
+Run only the steps chosen at intake, in this order, with the calls in [references/api.md](references/api.md):
 
 1. Test the source connection, then the destination connection.
    Pass on `connection_result.status` = `SUCCEEDED` only: the operation itself reports `succeeded` even when the connection failed.
@@ -145,7 +145,7 @@ Check: each step finished with its expected status; the task's `worker.log` and,
 
 ## 7. Verify
 
-Query the destination through Spark, all tables in one session.
+Query the destination through Spark (test data reference), all tables in one session.
 
 - Row count per table matches the source.
 - Column types match the expected mapping for the driver.
@@ -166,12 +166,12 @@ Write `<test-dir>/report.md` and show it to the user:
 2. Setup: environment, refs and SHAs, image tags, data size.
 3. Each failure: expected, actual, evidence (exact line or query result), likely cause, suggested fix with file and repo.
 4. Anything skipped, and why.
-5. How to reach the stack (the handoff table in the compose reference), when it is still running.
+5. How to reach the stack (the handoff rows), when it is still running.
 
 ## 9. Cleanup
 
 Keep the stack by default, so follow-up tests reuse it, and say how to tear it down.
-Tear down only when the user asks or a fresh stack replaces it, with the teardown commands in the compose reference.
+Tear down only when the user asks or a fresh stack replaces it, with the teardown commands in the environment and test data references.
 Then delete `<run-dir>/credentials.env` and remove the stack's worktrees, keeping the managed clones (see the code sources reference).
 
 ## Waits
@@ -188,7 +188,6 @@ Poll every 30 seconds unless the table says otherwise.
 On stuck: name the cause, fix it or retry once, and stop after two failed retries.
 
 ## Deeper detail, only when the skill and its references do not answer
-
 Each is 290 to 1,260 lines: list its headings with `grep -n '^#' <file>` and read only the section needed.
 - `<olake>/drivers/<driver>/README.md`: when the change touches a driver's sync modes, config or state.
 - `<olake>/destination/iceberg/README.md`: when the change touches the writer, its environment variables or debug mode.

@@ -26,3 +26,5 @@ After every test, add each new mistake here with the rule that prevents it; when
 7. Never put inline code inside a quoted shell string in a polling loop (`python3 -c '...'` with nested quotes).
    It breaks silently, prints nothing, and the loop never sees the end state.
    Write the code to a file.
+8. Quote every argument that holds `*`, `?` or `[`, such as `--include='*.go'` or `-o 'custom-columns=IMAGE:.spec.containers[0].image'`.
+   zsh treats them as a filename pattern, and when no file matches it aborts the command with `no matches found` before the command runs.

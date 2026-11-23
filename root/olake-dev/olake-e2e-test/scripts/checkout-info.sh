@@ -9,7 +9,7 @@
 # Default output, one key=value per line:
 #   branch, sha (8 characters), base, behind, ahead, dirty (yes or no),
 #   diff_hash (8 characters, uncommitted changes including untracked files; empty when clean),
-#   run_tag (v100.0.0-test-<sha>[-dirty-<diff_hash>]), changed_files (count against the base),
+#   run_tag (olake-dev-<sha>[-dirty-<diff_hash>]), changed_files (count against the base),
 #   then up to 30 "changed <file>" lines.
 #
 # --compare prints one line per file and exits 0:
@@ -88,11 +88,11 @@ states=$(file_states "$repo")
 if [ -n "$states" ]; then
   dirty=yes
   diff_hash=$({ git -C "$repo" diff HEAD --binary; printf '%s\n' "$states"; } | shasum -a 256 | cut -c1-8)
-  run_tag="v100.0.0-test-$sha-dirty-$diff_hash"
+  run_tag="olake-dev-$sha-dirty-$diff_hash"
 else
   dirty=no
   diff_hash=
-  run_tag="v100.0.0-test-$sha"
+  run_tag="olake-dev-$sha"
 fi
 changed=$(git -C "$repo" diff --name-only "origin/$base...HEAD")
 
