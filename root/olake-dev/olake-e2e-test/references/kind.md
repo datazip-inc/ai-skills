@@ -34,7 +34,8 @@ kind create cluster --name olake-dev-<run-id> --kubeconfig <run-dir>/kubeconfig 
 kubectl --kubeconfig <run-dir>/kubeconfig get nodes
 ```
 
-The node runs as the Docker container `olake-dev-<run-id>-control-plane`. Record the cluster name and the kubeconfig path in `stack.md`.
+The node runs as the Docker container `olake-dev-<run-id>-control-plane`.
+Record the cluster name and the kubeconfig path in `stack.md`.
 
 ## 2. Load images
 
@@ -75,7 +76,8 @@ olakeWorker:
 ```
 
 - `<tag>` is the run tag when the stack built that image, otherwise the pinned release tag recorded in `stack.md`.
-- Job files use the chart default, NFS (`global.logFileStorageMode: nfs`, deprecated for the end of 2026, but what ships today). Set `global.logFileStorageMode: s3` when the test is about S3 log storage or the change touches it.
+- Job files use the chart default, NFS (`global.logFileStorageMode: nfs`, deprecated for the end of 2026, but what ships today).
+  Set `global.logFileStorageMode: s3` when the test is about S3 log storage or the change touches it.
 - Add only what the test needs on top, for example `gitops.enabled: true` for GitOps.
 - Check the overlay before installing: `helm template olake <olake-helm>/helm/olake -n olake -f <run-dir>/values.yaml | grep -E '^\s+image: ' | sort -u` shows the intended tags.
 
@@ -89,15 +91,17 @@ helm --kubeconfig <run-dir>/kubeconfig install olake <olake-helm>/helm/olake -n 
 ```
 
 Run it in the background; a first install takes about 2 minutes with the images already on the machine.
-`--wait` can return before the `olake-signup-init` job has finished, so the gate also waits for jobs:
+While it runs, start the gate; do not wait for helm, which only gives up after its 15-minute timeout:
 
 ```bash
-kubectl --kubeconfig <run-dir>/kubeconfig -n olake wait --for=condition=Available deploy --all --timeout=300s
-kubectl --kubeconfig <run-dir>/kubeconfig -n olake wait --for=condition=Complete job --all --timeout=300s
-kubectl --kubeconfig <run-dir>/kubeconfig -n olake get deploy -o wide
+${CLAUDE_SKILL_DIR}/scripts/kind-gate.sh <run-dir>/kubeconfig olake
 ```
 
-The last command shows the image of each deployment: the run tag for each built image, the pinned release tag for the others.
+It polls every 10 seconds until every Deployment and StatefulSet is ready and every Job (`olake-signup-init` too) has succeeded.
+It stops at the first broken state instead: a crash loop, an image that cannot be pulled, a pod that cannot be scheduled, or a failed Job.
+It ends with `GATE PASS` and the image of each deployment, or `GATE FAIL: <reason>` with the latest warning events.
+Check the images: the run tag for each built image, the pinned release tag for the others.
+On a failure, stop helm (`kill` its background job) before fixing the cause.
 
 Port-forward the UI in the background, then log in; a 200 is the end of the gate:
 
@@ -151,9 +155,11 @@ For the worker log of one task, use `--name 'worker-*'` instead.
 Build the image with its new run tag, load it as in section 2, set the new tag in `<run-dir>/values.yaml`, and upgrade:
 
 ```bash
-helm --kubeconfig <run-dir>/kubeconfig upgrade olake <olake-helm>/helm/olake -n olake -f <run-dir>/values.yaml --wait --timeout 10m
+helm --kubeconfig <run-dir>/kubeconfig upgrade olake <olake-helm>/helm/olake -n olake -f <run-dir>/values.yaml > <run-dir>/logs/helm-upgrade.log 2>&1
+${CLAUDE_SKILL_DIR}/scripts/kind-gate.sh <run-dir>/kubeconfig olake
 ```
 
+Without `--wait`, the upgrade returns once the change is applied, and the gate then follows the rollout and stops at the first broken pod.
 Only the deployments whose values changed are rolled; the database and MinIO keep their data.
 Then start the port-forward again (section 4).
 
@@ -177,4 +183,5 @@ kill "$(cat <run-dir>/port-forward.pid)"
 kind delete cluster --name olake-dev-<run-id> --kubeconfig <run-dir>/kubeconfig
 ```
 
-Deleting the cluster removes everything the chart created. The loaded images stay in the host's Docker; remove `<run-dir>/images/` and the images only when the user asks.
+Deleting the cluster removes everything the chart created.
+The loaded images stay in the host's Docker; remove `<run-dir>/images/` and the images only when the user asks.

@@ -8,8 +8,8 @@ After every test, add each new mistake here with the rule that prevents it; when
 
 1. Test only supported paths.
    Ask before testing anything marked deprecated in the code or the docs.
-2. A case that is expected to fail gets the smallest retry setting, and runs last or in the background.
-   A retry setting of 0 often means "use the default", not "no retries": check the spec.
+2. A case that is expected to fail runs last or in the background.
+   For a retry setting other than the source's `retry_count` (SKILL.md step 5), check the spec first: a `0` often means "use the default", not "no retries".
 
 ## Deploy
 

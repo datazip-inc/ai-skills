@@ -33,6 +33,15 @@ ${CLAUDE_SKILL_DIR}/scripts/checkout-info.sh <run-dir>/src/<repo> [base]
 
 A ref that does not resolve after the fetch is a blocker: show the exact error and ask the user to check the name or push the branch.
 
+On a reused stack the worktree already exists, and `worktree add` fails on it.
+Move it to the new ref instead; it is the skill's own worktree, not a user's checkout:
+
+```bash
+git -C ~/.olake-dev/repos/<repo> fetch -q origin
+git -C <run-dir>/src/<repo> checkout -q --detach origin/<branch>                                        # or a tag or SHA
+${CLAUDE_SKILL_DIR}/scripts/checkout-info.sh <run-dir>/src/<repo> [base]
+```
+
 At cleanup, remove the worktree and keep the clone, so the next run only fetches:
 
 ```bash

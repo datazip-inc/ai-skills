@@ -21,9 +21,9 @@ import urllib.request
 # Both stacks serve the UI and API on localhost:8000 (compose publishes the port, kind port-forwards it),
 # under project id "123", the id the UI uses (olake-ui ui/src/config/apiConfig.ts).
 BASE = "http://localhost:8000/api/v1/project/123"
-# Spec, test connection and discover finish in under 2 minutes on a warm stack (the skill's Waits table);
-# 180 seconds leaves room for a first image pull.
-DEFAULT_TIMEOUT = 180
+# Spec, test connection and discover finish in under 2 minutes on a warm stack: the silence limit in the skill's
+# Waits table. A failed operation returns at once, whatever the limit.
+DEFAULT_TIMEOUT = 120
 # Each request returns at once, or after the 10-second long poll below; 30 seconds covers a slow container.
 HTTP_TIMEOUT = 30
 # The server holds an operations poll for up to this many seconds before it answers "running".

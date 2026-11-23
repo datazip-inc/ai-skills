@@ -44,11 +44,11 @@ services:
 ```
 
 - Never leave out an `image` line: the compose default is `latest`, always pulled, so the stack would run whatever was published last.
-- Keep both `environment` blocks always. Drop `APP_ENV` and `CUSTOM_DRIVER_VERSION` when no driver was built.
+- Keep both `environment` blocks always, and drop only `APP_ENV` and `CUSTOM_DRIVER_VERSION` when no driver was built.
   Together they make the UI offer the local driver tag and skip its version checks.
 - An override, not an edit to `docker-compose-v1.yml`: the compose file may be the user's working copy, or a read-only checkout of a repo that was not built.
 
-The compose file comes from `<olake-ui>`. When olake-ui is not part of the change, use the managed clone at the pinned release tag of `olakego/ui`, so the compose file matches the images.
+The compose file comes from `<olake-ui>`; when olake-ui is not part of the change, that is the managed clone at the pinned release tag of `olakego/ui`, so the compose file matches the images.
 Start it from the run directory, so the compose file's `${PWD}/olake-data` bind mount lands there and not in the repo:
 
 ```bash
@@ -74,8 +74,8 @@ The worker names it from the Temporal workflow ID:
 
 | Task | `<workflow-dir>` | Example |
 | --- | --- | --- |
-| Spec, test connection, discover, stream difference | The workflow ID | `fetch-spec-postgres-<n>`, `test-connection-olake-<id>`, `discover-catalog-olake-<id>` |
-| Sync, clear destination | SHA-256 of the workflow ID `sync-<project>-<job id>-<start time>` | `printf %s 'sync-olake-3-2026-11-12T12:34:03Z' \| shasum -a 256` |
+| Spec, test connection, discover, stream difference | The workflow ID, which is the `operation_id` that `api-op.py` prints | `discover-catalog-123-8f14e45fceea167a5a36dedd4bea2543` |
+| Sync, clear destination | SHA-256 of the workflow ID `sync-<project>-<job id>-<start time>` | `printf %s 'sync-123-3-2026-11-12T12:34:03Z' \| shasum -a 256` |
 
 The worker log line `running container` gives it as `containerName`, with the command and the image tag.
 Every directory has `logs/worker.log`: the worker's JSON log for that one task, the first file to read when a task fails.
