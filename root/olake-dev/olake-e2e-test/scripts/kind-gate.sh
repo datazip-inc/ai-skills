@@ -1,11 +1,11 @@
 #!/bin/bash
-# Deploy gate for the OLake chart on kind: wait until every workload is ready, and stop at the first broken state
+# Deploy gate for the OLake Helm chart on any Kubernetes cluster: wait until every workload is ready, and stop at the first broken state
 # instead of waiting out the timeout. Reads the workloads from the namespace itself, so it needs no list of names.
 #
-# Usage: kind-gate.sh <kubeconfig> [namespace] [timeout-seconds]
-#   kubeconfig       the stack's own kubeconfig, <run-dir>/kubeconfig (never the user's ~/.kube/config)
+# Usage: <this script> <kubeconfig> [namespace] [timeout-seconds]
+#   kubeconfig       the kubeconfig file whose current context is the target cluster
 #   namespace        default olake
-#   timeout-seconds  default 300: a first install takes about 2 minutes with the images loaded
+#   timeout-seconds  default 300: a first install on kind takes about 2 minutes with the images loaded
 #
 # Ready means: every Deployment and StatefulSet finished its rollout with all replicas ready, and every Job succeeded.
 # Run it after the change is applied (helm install started, or helm upgrade returned), so it sees the new spec.
@@ -20,7 +20,7 @@ set -u
 kubeconfig=${1:-}
 ns=${2:-olake}
 timeout=${3:-300}
-[ -f "$kubeconfig" ] || { echo "usage: kind-gate.sh <kubeconfig> [namespace] [timeout-seconds]" >&2; exit 2; }
+[ -f "$kubeconfig" ] || { echo "usage: $(basename "$0") <kubeconfig> [namespace] [timeout-seconds]" >&2; exit 2; }
 
 poll=10 # seconds between checks: pod states change on the kubelet's sync, so faster polling adds nothing
 deadline=$(( $(date +%s) + timeout ))

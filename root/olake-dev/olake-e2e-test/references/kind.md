@@ -171,7 +171,7 @@ Then start the port-forward again (section 4).
 | API | `http://localhost:8000/api/v1/project/123`, cookie login with `POST /login` |
 | Port-forward | PID in `<run-dir>/port-forward.pid`; start it again with the command in section 4 |
 | kubectl | `kubectl --kubeconfig <run-dir>/kubeconfig -n olake ...` |
-| Temporal UI | Set `temporal.ui.enabled: true` in the overlay, then `kubectl --kubeconfig <run-dir>/kubeconfig -n olake port-forward svc/temporal-ui 8081:8081` |
+| Temporal UI | Set `temporal.ui.enabled: true` and `temporal.ui.service.type: ClusterIP` in the overlay (chart 0.0.36 fails to render without the type), then `kubectl --kubeconfig <run-dir>/kubeconfig -n olake port-forward svc/temporal-ui 8081:8081` |
 | Driver version to pick in the UI | The run tag, when a driver was built; else the pinned release tag |
 | Image tags in use | One line per image |
 | Logs | Section 5 |

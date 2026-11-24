@@ -8,7 +8,7 @@ metadata:
 
 # Use OLake UI: sources, destinations, jobs and syncs
 
-The stack must already be running and reachable: `olake-ui-deploy` (this plugin) sets it up with docker compose; for Kubernetes, `olake-helm-deploy` is planned and not written yet.
+The stack must already be running and reachable: `olake-ui-deploy` (this plugin) sets it up with docker compose; on Kubernetes, `olake-helm-deploy` in the `olake-helm` plugin (`/plugin install olake-helm@olake-ai-skills`) installs it and port-forwards the UI to `localhost:8000`.
 Every call, body and server rule is in [references/api.md](references/api.md).
 What each change does to running syncs, sync state, the schedule and the destination tables is in [references/behaviours.md](references/behaviours.md): read it before changing or deleting anything that has synced.
 How a task flows from the API to the driver, and where its files land: [../references/architecture.md](../references/architecture.md).

@@ -1,0 +1,7 @@
+{
+  "name": "olake-helm",
+  "description": "Run OLake on Kubernetes with the olake Helm chart: install, configure task storage, encryption, access, external databases, registries and job placement, upgrade, read logs and uninstall.",
+  "skills": [
+    "./olake-helm-deploy"
+  ]
+}

@@ -19,6 +19,11 @@
       "description": "Run and use the OLake UI: set it up with docker compose, create sources, destinations and jobs in the UI or through the API, and manage them with GitOps."
     },
     {
+      "name": "olake-helm",
+      "source": "./olake-helm",
+      "description": "Run OLake on Kubernetes with the olake Helm chart: install, configure, upgrade, read logs and uninstall."
+    },
+    {
       "name": "olake-dev",
       "source": "./root/olake-dev",
       "description": "For developers: build olake, olake-ui and olake-helm from chosen branches, deploy them together and test a feature or change end to end."

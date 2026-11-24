@@ -18,6 +18,7 @@ Claude Code:
 /plugin marketplace add datazip-inc/ai-skills
 /plugin install olake-go@olake-ai-skills            # run OLake
 /plugin install olake-ui@olake-ai-skills           # run and use the OLake UI
+/plugin install olake-helm@olake-ai-skills         # run OLake on Kubernetes
 /plugin install olake-dev@olake-ai-skills          # test OLake code changes across repos (developers)
 ```
 
@@ -40,7 +41,7 @@ Developer tooling, which is not a product, lives under `root/`.
 | `olake-go/` | Users | Run OLake: drivers, destinations, deploy, troubleshoot. Mirrors the [olake repo](https://github.com/datazip-inc/olake) layout |
 | `root/olake-dev/` | Developers | `olake-e2e-test`: build olake, olake-ui and olake-helm from chosen branches, deploy them together and test a change end to end |
 | `olake-ui/` | Users and developers | `olake-ui-deploy`: run the OLake UI stack with docker compose (install, settings, upgrade, tear down). `olake-ui-manage`: create sources, destinations and jobs, sync and read run logs, in the UI or through the API. Planned: GitOps |
-| `olake-helm/` | Users and developers | Planned: deploy OLake on Kubernetes with Helm (values, log storage, upgrade); how the worker runs jobs. Also what the other repos rely on from olake-helm |
+| `olake-helm/` | Users and developers | `olake-helm-deploy`: run OLake on Kubernetes with the Helm chart (install, values for storage, encryption, access, external databases, registry and job placement, upgrade, uninstall). Planned: how the worker runs task pods (`olake-worker`) |
 
 `olake-dev` has optional settings for the local paths of the three code repos. They are only needed to test local, unpushed changes; pushed branches are fetched automatically.
 

@@ -28,7 +28,7 @@ The `fusion` profile (table maintenance) is not covered here.
 
 - Install, start, configure, upgrade or remove OLake UI with docker compose.
 - The stack does not come up, or the login fails.
-- Not covered: sources, destinations and jobs: `olake-ui-manage` (this plugin); a code change under test: `olake-e2e-test` (plugin `olake-dev`); Kubernetes: `olake-helm-deploy`, planned and not written yet.
+- Not covered: sources, destinations and jobs: `olake-ui-manage` (this plugin); a code change under test: `olake-e2e-test` (plugin `olake-dev`); Kubernetes: `olake-helm-deploy`, in the `olake-helm` plugin of this marketplace (`/plugin install olake-helm@olake-ai-skills`).
 
 ## Inputs to collect
 
@@ -132,7 +132,7 @@ docker compose -f docker-compose-v1.yml -f compose.override.yml down -v   # also
 ## Next
 
 - Create sources, destinations and jobs: `olake-ui-manage`.
-- Run on Kubernetes instead: `olake-helm-deploy`, planned and not written yet.
+- Run on Kubernetes instead: `olake-helm-deploy` (plugin `olake-helm`).
 
 ## Rules
 
