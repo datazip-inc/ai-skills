@@ -94,6 +94,8 @@ The UI calls the same API, so the rules and errors in [references/api.md](refere
 
 ## Logs of a run
 
+What the worker's lines and failure messages mean: `references/task-lifecycle.md` of the `olake-helm` plugin (`/plugin install olake-helm@olake-ai-skills`): the steps of a task, its time limits and retries, and the worker's failure messages; the same worker runs on docker compose.
+
 ```bash
 curl -s -b cookies.txt -H 'Content-Type: application/json' -d '{"file_path":"<file_path of the run>"}' \
   '<api>/jobs/<id>/tasks/1/logs?source=all&limit=200' > logs.json

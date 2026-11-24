@@ -101,6 +101,8 @@ Never move to an older release: the OLake database may hold migrations the older
 
 ## Logs
 
+Why a task failed, hangs or waits: `references/task-lifecycle.md` of the `olake-helm` plugin (`/plugin install olake-helm@olake-ai-skills`): the steps of a task, its time limits and retries, and the worker's failure messages; the same worker runs on docker compose.
+
 | What | Command |
 | --- | --- |
 | UI and API | `docker logs --since 10m olake-ui 2>&1 \| grep -i -E 'error\|fail' \| cut -c1-250` |

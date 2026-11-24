@@ -22,7 +22,7 @@ The `fusion` add-on (table maintenance) and Elasticsearch for Temporal are off b
 - Not covered:
   - sources, destinations, jobs and syncs: `olake-ui-manage`, in the `olake-ui` plugin of this marketplace (`/plugin install olake-ui@olake-ai-skills`); it works the same on Kubernetes once the UI is reachable on `localhost:8000`.
   - docker compose: `olake-ui-deploy`, in the same `olake-ui` plugin.
-  - how the worker schedules and runs task pods, in depth: `olake-worker`, planned and not written yet; until then, [references/values.md](references/values.md) (job placement and resources) and the Logs section below.
+  - why a task failed, hangs or waits (its steps, time limits, retries, the worker's failure messages): [../references/task-lifecycle.md](../references/task-lifecycle.md).
   - GitOps: planned and not written yet; the chart's guide is `helm/olake/docs/gitops.md` in the olake-helm repo.
 
 ## Inputs to collect
@@ -139,6 +139,8 @@ Never move to an older release: the OLake database may hold migrations the older
 
 ## Logs
 
+What each line of a task's `worker.log` means, and how far the task got: [../references/task-lifecycle.md](../references/task-lifecycle.md).
+
 | What | Command |
 | --- | --- |
 | UI and API | `kubectl --kubeconfig ~/olake-helm/kubeconfig -n olake logs deploy/olake-ui -c olake-ui --since 10m \| grep -i -E 'error\|fail' \| cut -c1-250` |
@@ -166,6 +168,8 @@ helm pull olake/olake --version <chart-version> --untar --untardir ~/olake-helm/
 ```
 
 ## Common errors
+
+For a failed, hanging or waiting task, start with the worker's own message: [../references/task-lifecycle.md](../references/task-lifecycle.md).
 
 | Error | Cause | Fix |
 | --- | --- | --- |
