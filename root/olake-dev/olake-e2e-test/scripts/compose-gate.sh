@@ -8,7 +8,8 @@
 #   timeout-seconds  default 180: the "stack up" limit in the skill's Waits table
 #   ui-url           default http://localhost:8000
 #
-# Ready means: a service with a healthcheck is healthy, a one-shot service (migration, signup-init) exited 0,
+# Ready means: a service with a healthcheck is healthy, a one-shot service (migration, signup-init) exited 0
+# (signup-init may exit 1 with HTTP 409 on a later start, when the admin user already exists),
 # and every other service is running. Then POST /login with the default admin login must return 200.
 # It stops at the first broken state instead of waiting out the timeout: a one-shot that stays failed or a service
 # that stays unhealthy across two polls, or a long-running service (restart always or unless-stopped) restarted twice
@@ -44,7 +45,11 @@ while :; do
   while IFS='|' read -r svc state health code; do
     case "$state/$health" in
       running/healthy | running/) ;;                      # ready; no healthcheck means running is enough
-      exited/*) [ "$code" = 0 ] || failed="$failed $svc(exit=$code)" ;;
+      exited/*)
+        # signup-init runs again on every "up" and gets HTTP 409 once the admin user exists: that is done, not failed.
+        if [ "$code" != 0 ] && ! { [ "$svc" = signup-init ] && docker compose -p "$project" logs signup-init 2> /dev/null | grep -q 'HTTP 409'; }; then
+          failed="$failed $svc(exit=$code)"
+        fi ;;
       running/unhealthy) failed="$failed $svc(unhealthy)" ;;
       *) waiting="$waiting $svc($state${health:+/$health})" ;; # created, restarting, starting, unhealthy
     esac

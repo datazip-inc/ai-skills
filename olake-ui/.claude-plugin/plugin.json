@@ -1,0 +1,8 @@
+{
+  "name": "olake-ui",
+  "description": "Run and use the OLake UI: set it up with docker compose, create sources, destinations and jobs in the UI or through the API, and manage them with GitOps.",
+  "skills": [
+    "./olake-ui-deploy",
+    "./olake-ui-manage"
+  ]
+}

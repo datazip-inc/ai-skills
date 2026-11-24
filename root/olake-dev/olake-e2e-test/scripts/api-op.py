@@ -3,7 +3,7 @@
 
 Usage: api-op.py <run-dir> <api-path> <body.json> <result.json> [timeout-seconds]
 
-POSTs the body to http://localhost:8000/api/v1/project/123/<api-path> with the session cookie
+POSTs the body to $OLAKE_URL/api/v1/project/123/<api-path> (OLAKE_URL defaults to http://localhost:8000) with the session cookie
 from <run-dir>/cookies.txt (written by `curl -c` at login), long-polls the operation (POLL_WAIT seconds per call),
 writes the result to <result.json> and prints one status line.
 Exits 0 on "succeeded", 1 otherwise.
@@ -13,6 +13,7 @@ data.connection_result.status in <result.json>.
 """
 
 import json
+import os
 import sys
 import time
 import urllib.error
@@ -20,7 +21,8 @@ import urllib.request
 
 # Both stacks serve the UI and API on localhost:8000 (compose publishes the port, kind port-forwards it),
 # under project id "123", the id the UI uses (olake-ui ui/src/config/apiConfig.ts).
-BASE = "http://localhost:8000/api/v1/project/123"
+# OLAKE_URL overrides the host and port, for a stack on another port or machine.
+BASE = os.environ.get("OLAKE_URL", "http://localhost:8000").rstrip("/") + "/api/v1/project/123"
 # Spec, test connection and discover finish in under 2 minutes on a warm stack: the silence limit in the skill's
 # Waits table. A failed operation returns at once, whatever the limit.
 DEFAULT_TIMEOUT = 120

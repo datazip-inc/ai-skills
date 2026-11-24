@@ -28,11 +28,11 @@ The source is the driver the change touches, else `postgres`.
 | `kafka` | `kafkaJson`, `kafkaAvro`, `schema-registry` | 29092 (JSON), 39092 (Avro), 8081 (schema registry) | none | `docker exec -i kafkaJson kafka-console-producer --bootstrap-server localhost:9092 --topic <topic>` |
 | `s3` | `minio`, from the destination stack | 9000 | `admin` / `password` | `olake.s3.start` starts only MinIO; see `<olake>/drivers/s3/README.md` for the test files |
 
-- Read from each driver's `docker-compose.yml` and `driver.mk` on 2026-11-19; only `postgres` has been run end to end with this skill.
+- Read from each driver's `docker-compose.yml` and `driver.mk` on 2026-11-19
   When a value here and the driver's files disagree, the files win: the `PROBE.<driver>` line in `drivers/<driver>/driver.mk` is a working client command.
 - `mssql` and `db2` images are `linux/amd64`: on an ARM Mac they run emulated and start slowly (db2 waits up to about 12 minutes).
   Start them first, in the background.
-- `kafka`'s schema registry takes port 8081, the Temporal UI port of a compose stack started with `--profile debug`: do not use both.
+- `kafka`'s schema registry takes port 8081, the Temporal UI port of a compose stack started with `--profile debug`: forward temporal ui to 8082 instead.
 - `mongodb` announces its replica set member as `host.docker.internal:27017`, so clients outside Docker Desktop need that name to resolve.
 
 ## 2. Start, check Spark, seed
