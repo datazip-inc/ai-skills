@@ -9,6 +9,7 @@
   "homepage": "https://olake.io",
   "repository": "https://github.com/datazip-inc/ai-skills",
   "skills": [
-    "./olake-protocol"
+    "./olake-protocol",
+    "./drivers/olake-driver-postgres"
   ]
 }
