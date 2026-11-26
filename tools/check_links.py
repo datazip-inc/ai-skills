@@ -9,6 +9,7 @@ Exits 1 on any broken link.
 import argparse
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -18,6 +19,7 @@ LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 FENCE_RE = re.compile(r"^```.*?^```", re.MULTILINE | re.DOTALL)
 SKIP_DIRS = {".git", "node_modules"}
 TIMEOUT = 15
+RETRIES = 3
 
 
 def markdown_files():
@@ -27,6 +29,18 @@ def markdown_files():
 
 
 def url_ok(url):
+    # Rate limits and server errors (GitHub often returns 503 to CI runners) are retried with
+    # backoff; only the last attempt's result counts.
+    for attempt in range(RETRIES):
+        ok, status = url_status(url)
+        if ok or not (status == 429 or (isinstance(status, int) and status >= 500)):
+            return ok, status
+        if attempt < RETRIES - 1:
+            time.sleep(2 ** (attempt + 1))
+    return ok, status
+
+
+def url_status(url):
     headers = {"User-Agent": "ai-skills-link-check"}
     for method in ("HEAD", "GET"):
         try:
