@@ -11,6 +11,7 @@
   "skills": [
     "./olake-protocol",
     "./drivers/olake-driver-abstract",
-    "./drivers/olake-driver-postgres"
+    "./drivers/olake-driver-postgres",
+    "./destination/olake-destination-abstract"
   ]
 }
