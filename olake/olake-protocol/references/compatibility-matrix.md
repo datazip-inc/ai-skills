@@ -5,7 +5,7 @@ are completed.
 
 | Source | Sync modes | Destination | Catalog | Storage | Run mode | Skills |
 | --- | --- | --- | --- | --- | --- | --- |
-| Postgres | `full_refresh`, `incremental`, `cdc`, `strict_cdc` | Iceberg | REST | MinIO | CLI, UI (compose) | `olake-driver-postgres`, `olake-destination-iceberg` |
+| Postgres | `full_refresh`, `incremental`, `cdc`, `strict_cdc` | Iceberg | REST | MinIO | CLI | `olake-driver-postgres`, `olake-destination-iceberg` |
 
 Other sources (MySQL, MongoDB, MSSQL, Oracle, DB2, S3, Kafka) and destinations (Iceberg on Glue, Hive,
 JDBC, S3 Tables, Polaris, Unity; Parquet) work in OLake but have no skill yet. For them, run the base

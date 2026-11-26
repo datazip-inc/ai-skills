@@ -1,5 +1,7 @@
 # OLake UI flow
 
+Not covered in this release: the skills run OLake through the CLI only. Kept for a later release.
+
 Prerequisite: OLake UI is running (`olake-deploy-docker-compose`), by default at `http://localhost:8000`.
 
 1. **Sources → + Create Source.** Pick the connector, keep the OLake version at the latest stable,

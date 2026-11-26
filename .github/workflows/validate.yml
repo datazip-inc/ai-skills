@@ -16,6 +16,8 @@ jobs:
       - run: pip install -r tools/requirements.txt
       - name: Validate skills
         run: python tools/validate.py
+      - name: Generated references are up to date
+        run: python tools/gen_config_refs.py --check
       - name: Check links
         run: python tools/check_links.py --external
 

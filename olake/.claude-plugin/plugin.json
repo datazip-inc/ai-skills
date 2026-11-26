@@ -12,6 +12,7 @@
     "./olake-protocol",
     "./drivers/olake-driver-abstract",
     "./drivers/olake-driver-postgres",
-    "./destination/olake-destination-abstract"
+    "./destination/olake-destination-abstract",
+    "./destination/olake-destination-iceberg"
   ]
 }

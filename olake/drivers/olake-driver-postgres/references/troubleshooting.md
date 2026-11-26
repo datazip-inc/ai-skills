@@ -1,6 +1,6 @@
 # Postgres troubleshooting
 
-Logs: `logs/sync_<timestamp>/olake.log` in the config folder (CLI), or the job logs in the UI. Find the
+Logs: `logs/sync_<timestamp>/olake.log` in the config folder. Find the
 first `ERROR` or `FATAL` line and match it below. Sources:
 [`errors.go`](https://github.com/datazip-inc/olake/blob/v1.1.2/drivers/postgres/internal/errors.go),
 [`cdc.go`](https://github.com/datazip-inc/olake/blob/v1.1.2/drivers/postgres/internal/cdc.go),

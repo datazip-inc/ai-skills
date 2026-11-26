@@ -65,8 +65,8 @@ Tuning:
    `_op_type` `c`/`i`, `u` and `d` ([`olake-destination-abstract`](../../../destination/olake-destination-abstract/references/columns.md)).
 4. Save the new position in `state.json`.
 
-Each sync reads the log up to the position current at start, then exits. Schedule reruns (cron,
-OLake UI) for near real time.
+Each sync reads the log up to the position current at start, then exits. Schedule reruns (cron or
+any scheduler) for near real time.
 
 ## Reruns and resume
 

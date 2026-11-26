@@ -1,6 +1,6 @@
 ---
 name: olake-protocol
-description: "Run OLake end to end for any source and destination: check the connections, discover streams, pick streams and sync modes, sync, verify, rerun with state, and clear. Use when the user wants to set up, try, or run OLake (a POC, 'replicate my Postgres/MySQL/MongoDB/... to Iceberg or Parquet'), run a sync with the OLake CLI or UI, or asks about streams files, state.json, sync flags or rerunning a sync. Entry point for every other OLake skill."
+description: "Run OLake end to end for any source and destination: check the connections, discover streams, pick streams and sync modes, sync, verify, rerun with state, and clear. Use when the user wants to set up, try, or run OLake (a POC, 'replicate my Postgres/MySQL/MongoDB/... to Iceberg or Parquet'), run a sync with the OLake CLI, or asks about streams files, state.json, sync flags or rerunning a sync. Entry point for every other OLake skill."
 metadata:
   status: experimental
 ---
@@ -23,7 +23,7 @@ Ask only for what is missing. Check the combination against
 
 | Input | Example | Where it comes from |
 | --- | --- | --- |
-| Run mode | `cli` or `ui` | User. Default to `ui` for a POC that will be scheduled, `cli` for a one-off run. |
+| Run mode | `cli` | This release covers the CLI only. If the user asks for the OLake UI, say these skills do not cover it yet and point to https://olake.io/docs. |
 | Source type | `postgres` | One of `postgres mysql mongodb mssql oracle db2 s3 kafka`. |
 | Source connection | host, port, database, user, `<PASSWORD>` | User. Field list in the driver skill. |
 | Destination type | `iceberg` or `parquet` | User. |
@@ -39,14 +39,12 @@ Ask only for what is missing. Check the combination against
 - [ ] The source and destination are reachable from where the containers run. From a container,
       `localhost` is the container itself; use the host name or `host.docker.internal`.
 - [ ] Source prerequisites done (CDC settings, grants): follow the driver skill.
-- [ ] For `ui` mode, OLake UI is up: follow `olake-deploy-docker-compose`.
 - [ ] Run through [references/poc-checklist.md](references/poc-checklist.md) for a POC.
 
 ## Steps
 
 CLI mode uses one image per source: `olakego/source-<source>:<tag>`. The same image writes to every
 destination. Full commands and mount rules: [references/cli.md](references/cli.md).
-UI mode: [references/ui.md](references/ui.md).
 
 1. Create the config folder and write `source.json` and `destination.json` in it. Get the fields from
    the driver and destination skills. Use `<PASSWORD>` placeholders and ask the user to fill them in.
@@ -104,7 +102,7 @@ Everything else: load `olake-troubleshoot`.
 
 ## Next
 
-- Schedule the sync, or hand it to a team: switch to `ui` mode with `olake-deploy-docker-compose`.
+- Schedule the sync: run the step 7 command from cron or any scheduler, always with `--state`.
 - Tune sync modes, cursors or CDC: `olake-driver-abstract` and the driver skill.
 - Partitioning, normalization or delete formats: `olake-destination-abstract` and the destination skill.
 - Every CLI flag: [references/flags.md](references/flags.md).
