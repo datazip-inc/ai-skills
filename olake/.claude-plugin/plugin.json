@@ -10,6 +10,7 @@
   "repository": "https://github.com/datazip-inc/ai-skills",
   "skills": [
     "./olake-protocol",
+    "./drivers/olake-driver-abstract",
     "./drivers/olake-driver-postgres"
   ]
 }
