@@ -1,6 +1,6 @@
 ---
 name: olake-driver-oracle
-description: "Connect Oracle Database to OLake as a source (mirrors drivers/oracle): source.json with service name or SID, read grants, full_refresh and incremental sync (no CDC). Use when the source is Oracle and the user wants to run a sync."
+description: "Connect Oracle Database to OLake: source.json with service name or SID, read grants, full_refresh and incremental (no CDC). Use when the source is Oracle, or on ORA- errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental

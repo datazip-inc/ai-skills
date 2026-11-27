@@ -1,6 +1,6 @@
 ---
 name: olake-driver-s3
-description: "Read files from Amazon S3 or S3-compatible storage (MinIO) into OLake as a source (mirrors drivers/s3): source.json, bucket and path_prefix layout, CSV, JSON, Parquet and XML files, IAM permissions, full_refresh and incremental by file modification time. Use when the source is files in S3 and the user wants to run a sync."
+description: "Read files from Amazon S3 or MinIO into OLake: source.json, bucket and path_prefix layout, CSV, JSON, Parquet and XML, IAM permissions, incremental by file modification time. Use when the source is files in S3 or S3-compatible storage."
 metadata:
   parent: olake-driver-abstract
   status: experimental

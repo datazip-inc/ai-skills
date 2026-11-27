@@ -1,6 +1,6 @@
 ---
 name: olake-driver-db2
-description: "Connect IBM Db2 (LUW) to OLake as a source (mirrors drivers/db2): source.json, read grants, full_refresh and incremental sync (no CDC at this version). Use when the source is Db2 and the user wants to run a sync."
+description: "Connect IBM Db2 (LUW) to OLake: source.json, read grants, full_refresh and incremental (no CDC at this version). Use when the source is Db2, or on SQLSTATE or CLI driver errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental

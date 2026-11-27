@@ -1,6 +1,6 @@
 ---
 name: olake-driver-mysql
-description: "Connect MySQL (or MariaDB-compatible MySQL hosts such as RDS, Aurora, Cloud SQL) to OLake as a source (mirrors drivers/mysql): source.json, read grants, and CDC from the binlog (log_bin, binlog_format ROW, binlog_row_image FULL). Use when the source is MySQL and the user wants to run a sync."
+description: "Connect MySQL to OLake (self-hosted, RDS, Aurora, Cloud SQL): source.json, grants, CDC from the binlog (log_bin, binlog_format ROW, binlog_row_image FULL). Use when the source is MySQL or MariaDB, or on binlog, GTID or grant errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental

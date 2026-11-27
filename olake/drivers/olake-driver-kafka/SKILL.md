@@ -1,6 +1,6 @@
 ---
 name: olake-driver-kafka
-description: "Read Kafka topics into OLake as a source (mirrors drivers/kafka): source.json, bootstrap servers, PLAINTEXT, SASL and SSL security, consumer group, topic pattern, JSON or Avro with Schema Registry. Use when the source is Kafka (self-hosted, Confluent, MSK) and the user wants to run a sync."
+description: "Read Kafka topics into OLake (self-hosted, Confluent, MSK): source.json, bootstrap servers, SASL and SSL, consumer group, topic pattern, JSON or Avro with Schema Registry. Use when the source is Kafka, or on broker, auth or offset errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental

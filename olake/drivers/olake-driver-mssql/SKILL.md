@@ -1,6 +1,6 @@
 ---
 name: olake-driver-mssql
-description: "Connect Microsoft SQL Server (self-hosted, Azure SQL, RDS) to OLake as a source (mirrors drivers/mssql): source.json, read grants, and CDC through SQL Server change data capture (enabled on the database and each table, SQL Server Agent running). Use when the source is SQL Server and the user wants to run a sync."
+description: "Connect SQL Server to OLake (self-hosted, Azure SQL, RDS): source.json, grants, CDC through SQL Server change data capture (enabled per database and table, SQL Server Agent running). Use when the source is SQL Server, or on CDC, cdc_jobs or Agent errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental

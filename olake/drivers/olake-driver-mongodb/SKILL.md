@@ -1,6 +1,6 @@
 ---
 name: olake-driver-mongodb
-description: "Connect MongoDB (self-hosted replica set, sharded cluster, Atlas, DocumentDB-compatible hosts) to OLake as a source (mirrors drivers/mongodb): source.json, read role, SRV and replica set options, and CDC through change streams. Use when the source is MongoDB and the user wants to run a sync."
+description: "Connect MongoDB to OLake (replica set, sharded cluster, Atlas, DocumentDB): source.json, read role, SRV and replica set options, CDC through change streams, the JSON data column. Use when the source is MongoDB, or on oplog, change stream or auth errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental
