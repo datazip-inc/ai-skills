@@ -20,3 +20,5 @@ All notable changes to the OLake agent skills. Versions match `version` in
 - `tools/validate.py`, `tools/check_links.py` and `tools/measure_tokens.py`.
 - `tools/gen_matrix.py`: writes `compatibility-matrix.md` from the driver, destination and deploy
   skills in the tree; `--ref <branch>` previews another branch.
+- `OLAKE_VERSION` moved to `olake/OLAKE_VERSION` so it ships with the plugin. `run_sync.sh` reads its
+  default image tag from it, and `validate.py` checks that olake links use that tag.

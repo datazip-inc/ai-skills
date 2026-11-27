@@ -60,9 +60,11 @@ that are on `staging` and not yet released.
    `description`) stay out of it, so they do not ship. Then run `python tools/gen_matrix.py` to add it
    to `olake/olake-protocol/references/compatibility-matrix.md`; never edit that file by hand.
 
-`OLAKE_VERSION` at the repo root is the one
+`olake/OLAKE_VERSION` is the one
 [olake-go release](https://github.com/datazip-inc/olake-go/releases) every skill is verified against.
-After re-checking the skills against a new release, bump it there; no skill carries its own version.
+It ships with the plugin and is the default image tag of `run_sync.sh`. After re-checking the skills
+against a new release, bump it there and run `python tools/gen_config_refs.py`; `validate.py` fails on
+any olake link at another tag. No skill carries its own version.
 3. Run the checks:
 
    ```bash

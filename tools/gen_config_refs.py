@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the per-driver and per-destination reference files from the olake release in OLAKE_VERSION.
+"""Generate the per-driver and per-destination reference files from the olake release in olake/OLAKE_VERSION.
 
 For every driver skill (olake/drivers/olake-driver-<name>/) this writes:
   - references/config.md        from drivers/<name>/resources/spec.json
@@ -429,7 +429,7 @@ def main():
     parser.add_argument("--check", action="store_true", help="do not write; exit 1 if any file is out of date")
     args = parser.parse_args()
 
-    tag = (ROOT / "OLAKE_VERSION").read_text(encoding="utf-8").strip()
+    tag = (ROOT / "olake" / "OLAKE_VERSION").read_text(encoding="utf-8").strip()
     source = Source(tag, args.olake_repo)
     stale = []
     for path, content in outputs(source):

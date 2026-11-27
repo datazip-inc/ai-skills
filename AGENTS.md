@@ -17,7 +17,7 @@ Iceberg or Parquet, then verify and troubleshoot the run.
 - Write secrets as placeholders (`<PASSWORD>`, `<SECRET_KEY>`). Never print them back.
 - Confirm with the user before anything that deletes data: `clear`, `docker compose down -v`, dropping a
   slot or a table.
-- Skills are checked against the OLake release in [`OLAKE_VERSION`](OLAKE_VERSION).
+- Skills are checked against the OLake release in [`olake/OLAKE_VERSION`](olake/OLAKE_VERSION).
 
 ## Working on the skills
 

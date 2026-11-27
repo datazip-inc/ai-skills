@@ -12,8 +12,9 @@ Checks, per SKILL.md:
   - SKILL.md is at most MAX_LINES lines
   - stable skills have every required section
 
-Also checks that every plugin.json skill path and marketplace.json plugin source exists, and that
-OLAKE_VERSION (the one OLake release every skill is verified against) is a vX.Y.Z tag.
+Also checks that every plugin.json skill path and marketplace.json plugin source exists, that
+olake/OLAKE_VERSION (the one OLake release every skill is verified against) is a vX.Y.Z tag, and that
+every link to the olake repo at a tag uses that tag.
 Exits 1 on any error.
 """
 
@@ -28,6 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent
 MAX_LINES = 200
 MAX_DESC = 300
 VERSION_RE = re.compile(r"^v\d+\.\d+\.\d+$")
+OLAKE_LINK_RE = re.compile(r"github\.com/datazip-inc/olake/(?:blob|tree)/(v\d+\.\d+\.\d+)/")
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 STATUSES = {"stable", "experimental"}
 REQUIRED_SECTIONS = [
@@ -146,13 +148,18 @@ def check_marketplace():
 
 
 def check_olake_version():
-    path = ROOT / "OLAKE_VERSION"
+    path = ROOT / "olake" / "OLAKE_VERSION"
     if not path.is_file():
         error(path, "missing; it holds the OLake release the skills are verified against, e.g. v1.2.0")
         return
     version = path.read_text(encoding="utf-8").strip()
     if not VERSION_RE.match(version):
         error(path, f"must be one vX.Y.Z tag, got {version!r}")
+        return
+    for md in sorted((ROOT / "olake").rglob("*.md")):
+        for tag in set(OLAKE_LINK_RE.findall(md.read_text(encoding="utf-8"))):
+            if tag != version:
+                error(md, f"links to olake at {tag}; OLAKE_VERSION is {version}")
 
 
 def main():

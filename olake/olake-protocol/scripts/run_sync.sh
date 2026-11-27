@@ -6,7 +6,7 @@
 #   <source>       postgres mysql mongodb mssql oracle db2 s3 kafka
 #   <CONFIG_DIR>   folder with source.json and destination.json
 # Options:
-#   --tag <tag>        image tag (default: $OLAKE_TAG, else v1.1.2)
+#   --tag <tag>        image tag (default: $OLAKE_TAG, else olake/OLAKE_VERSION)
 #   --network <name>   docker network, e.g. olake-poc for the local Iceberg stack
 #   --stages <list>    comma-separated, default check,discover,sync
 #                      (check = check-source,check-destination)
@@ -21,7 +21,8 @@ usage() { sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
 SOURCE=$1
 DIR=$(cd "$2" 2>/dev/null && pwd) || { echo "config folder not found: $2"; exit 2; }
 shift 2
-TAG=${OLAKE_TAG:-v1.1.2}
+VERSION_FILE="$(dirname "$0")/../../OLAKE_VERSION"
+TAG=${OLAKE_TAG:-$(cat "$VERSION_FILE" 2>/dev/null)}
 NETWORK=""
 STAGES="check,discover,sync"
 STATE=""
@@ -35,6 +36,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+[[ -z $TAG ]] && { echo "no image tag: pass --tag, set OLAKE_TAG, or restore $VERSION_FILE"; exit 2; }
 IMAGE=olakego/source-$SOURCE:$TAG
 RUN=(docker run --rm -v "$DIR:/mnt/config")
 [[ -n $NETWORK ]] && RUN+=(--network "$NETWORK")
