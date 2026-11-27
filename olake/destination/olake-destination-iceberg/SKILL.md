@@ -1,6 +1,6 @@
 ---
 name: olake-destination-iceberg
-description: "Write OLake syncs to Apache Iceberg (mirrors destination/iceberg): destination.json for every catalog (REST, Glue, Hive, JDBC, Lakekeeper, Nessie, Polaris, Unity, S3 Tables, BigLake, Horizon) on S3, MinIO, GCS or ADLS, a local REST catalog + MinIO stack for a POC, the namespace and table names OLake creates, and checking the written tables through the REST API or Spark, Trino, Athena. Use when the destination is Iceberg, the user needs a local Iceberg setup to try OLake, or asks where the synced tables are."
+description: "Write OLake syncs to Apache Iceberg on any catalog (REST, Glue, Hive, JDBC, Lakekeeper, Nessie, Polaris, Unity, S3 Tables, BigLake, Horizon) and S3, MinIO, GCS or ADLS, plus a local POC stack with Trino. Use when the destination is Iceberg, or to find or query the synced tables."
 metadata:
   parent: olake-destination-abstract
   status: experimental

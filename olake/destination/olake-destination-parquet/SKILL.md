@@ -1,6 +1,6 @@
 ---
 name: olake-destination-parquet
-description: "Write OLake syncs as plain Parquet files (mirrors destination/parquet): destination.json for local disk, Amazon S3, MinIO, GCS (S3 interop with HMAC keys) and Azure Blob / ADLS, the folder layout OLake writes, partition_regex folders, file size, and checking the files. Use when the destination is Parquet files rather than Iceberg tables, or the user wants the simplest local test target."
+description: "Write OLake syncs as Parquet files on local disk, S3, MinIO, GCS or Azure: destination.json, folder layout, partition folders, file size, checking the files. Use when the destination is Parquet, or the user wants the simplest local test target."
 metadata:
   parent: olake-destination-abstract
   status: experimental
