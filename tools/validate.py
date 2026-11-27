@@ -4,7 +4,8 @@
 Checks, per SKILL.md:
   - frontmatter parses as YAML and has name, description, metadata.status
   - name matches the folder, is kebab-case, at most 64 chars, and is unique
-  - description is at most 1024 chars
+  - description is at most MAX_DESC chars: it is loaded into every session, so keep it to what the
+    skill does and the words that should trigger it
   - metadata.parent, when set, names an existing skill
   - a finished skill is listed in its product's .claude-plugin/plugin.json; a draft (TODO in
     description) is not, so stubs never ship
@@ -25,6 +26,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 MAX_LINES = 200
+MAX_DESC = 300
 VERSION_RE = re.compile(r"^v\d+\.\d+\.\d+$")
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 STATUSES = {"stable", "experimental"}
@@ -77,8 +79,8 @@ def check_skill(path, data, text):
     desc = data.get("description")
     if not isinstance(desc, str) or not desc.strip():
         error(path, "missing description")
-    elif len(desc) > 1024:
-        error(path, f"description is {len(desc)} chars, max 1024")
+    elif len(desc) > MAX_DESC:
+        error(path, f"description is {len(desc)} chars, max {MAX_DESC}; keep what it does and its triggers")
 
     meta = data.get("metadata") or {}
     if not isinstance(meta, dict):

@@ -15,5 +15,6 @@
     "./destination/olake-destination-abstract",
     "./destination/olake-destination-iceberg",
     "./destination/olake-destination-parquet"
+    "./olake-troubleshoot"
   ]
 }

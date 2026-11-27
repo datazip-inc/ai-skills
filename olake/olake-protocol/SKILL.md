@@ -1,6 +1,6 @@
 ---
 name: olake-protocol
-description: "Run OLake end to end for any source and destination: check the connections, discover streams, pick streams and sync modes, sync, verify, rerun with state, and clear. Use when the user wants to set up, try, or run OLake (a POC, 'replicate my Postgres/MySQL/MongoDB/... to Iceberg or Parquet'), run a sync with the OLake CLI, or asks about streams files, state.json, sync flags or rerunning a sync. Entry point for every other OLake skill."
+description: "Start here for anything OLake. Set up and run a sync from any source to Iceberg or Parquet: check, discover, pick streams, sync, verify, rerun with state, clear. Use for a POC, 'replicate my <database> to Iceberg', running the OLake CLI, streams files, state.json or sync flags."
 metadata:
   status: experimental
 ---
@@ -48,36 +48,25 @@ destination. Full commands and mount rules: [references/cli.md](references/cli.m
 
 1. Create the config folder and write `source.json` and `destination.json` in it. Get the fields from
    the driver and destination skills. Use `<PASSWORD>` placeholders and ask the user to fill them in.
-2. Check the source connection:
-   ```bash
-   docker run --rm -v "<CONFIG_DIR>:/mnt/config" olakego/source-<source>:<tag> \
-     check --config /mnt/config/source.json
-   ```
-3. Check the destination connection:
-   ```bash
-   docker run --rm -v "<CONFIG_DIR>:/mnt/config" olakego/source-<source>:<tag> \
-     check --destination /mnt/config/destination.json
-   ```
-   Success is a `connectionStatus` message with `"status":"SUCCEEDED"`. On `FAILED`, read
-   `message` and the `prerequisites` list, then load the matching skill.
-4. Discover streams. Pass the destination so the defaults fit it:
-   ```bash
-   docker run --rm -v "<CONFIG_DIR>:/mnt/config" olakego/source-<source>:<tag> \
-     discover --config /mnt/config/source.json --destination /mnt/config/destination.json
-   ```
-   This writes `available_streams.json` and `selected_streams.json` into the config folder.
+
+Steps 2 to 7 use [scripts/run_sync.sh](scripts/run_sync.sh). It runs the stage, keeps the full log in
+the config folder (`<stage>.log`), prints a short summary, and on failure prints the matching error
+rows from every skill. Add `--tag <tag>` and, for services in a Docker network, `--network <name>`.
+The raw `docker run` commands: [references/cli.md](references/cli.md).
+
+2. Check the source: `scripts/run_sync.sh <source> <CONFIG_DIR> --stages check-source`
+3. Check the destination: `scripts/run_sync.sh <source> <CONFIG_DIR> --stages check-destination`
+   On `FAILED`, act on the matched error rows; with none, read the `message` and `prerequisites`
+   in the stage log with `grep connectionStatus`, then load the matching skill.
+4. Discover streams: `scripts/run_sync.sh <source> <CONFIG_DIR> --stages discover`. It writes
+   `available_streams.json` and `selected_streams.json` and lists the selected streams.
+   Steps 2 to 4 in one call: `--stages check,discover`.
 5. Edit `selected_streams.json`: keep only the streams the user wants and set `sync_mode`,
    `cursor_field`, `normalization`, `partition_regex` per stream. Field reference:
    [references/streams.md](references/streams.md). Do not edit `available_streams.json`.
-6. Sync:
-   ```bash
-   docker run --rm -v "<CONFIG_DIR>:/mnt/config" olakego/source-<source>:<tag> \
-     sync --config /mnt/config/source.json --destination /mnt/config/destination.json \
-     --available-streams /mnt/config/available_streams.json \
-     --selected-streams /mnt/config/selected_streams.json
-   ```
-7. Rerun for `incremental` and `cdc` streams: add `--state /mnt/config/state.json` to the step 6
-   command. Without `--state` the sync starts over. Details: [references/state.md](references/state.md).
+6. Sync: `scripts/run_sync.sh <source> <CONFIG_DIR> --stages sync`. It prints the records read.
+7. Rerun for `incremental` and `cdc` streams: `scripts/run_sync.sh <source> <CONFIG_DIR> --stages sync --state`.
+   Without `--state` the sync starts over. Details: [references/state.md](references/state.md).
 
 ## Verify
 

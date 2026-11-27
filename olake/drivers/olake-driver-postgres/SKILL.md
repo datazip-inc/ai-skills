@@ -1,6 +1,6 @@
 ---
 name: olake-driver-postgres
-description: "Connect PostgreSQL to OLake as a source (mirrors drivers/postgres): source.json, read grants, CDC through logical replication with pgoutput (wal_level, replication slot, publication, REPLICA IDENTITY), host variants (RDS, Aurora, Azure, Cloud SQL, Supabase, local Docker), ctid chunked backfill, type mapping and Postgres errors. Use when the source is Postgres or a Postgres-compatible managed service, or on errors about wal_level, replication slots, publications, LSN, pg_hba.conf or SQLSTATE codes."
+description: "Connect PostgreSQL to OLake: source.json, grants, CDC with pgoutput (wal_level, slot, publication, REPLICA IDENTITY) on RDS, Aurora, Azure, Cloud SQL, Supabase or Docker. Use when the source is Postgres, or on wal_level, replication slot, publication, LSN, pg_hba.conf or SQLSTATE errors."
 metadata:
   parent: olake-driver-abstract
   status: experimental
