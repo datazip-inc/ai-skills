@@ -18,3 +18,5 @@ All notable changes to the OLake agent skills. Versions match `version` in
 - `AGENTS.md` and `CLAUDE.md`, so a cloned repo works with no install.
 - Apache-2.0 licence.
 - `tools/validate.py`, `tools/check_links.py` and `tools/measure_tokens.py`.
+- `tools/gen_matrix.py`: writes `compatibility-matrix.md` from the driver, destination and deploy
+  skills in the tree; `--ref <branch>` previews another branch.

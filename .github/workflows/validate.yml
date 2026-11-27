@@ -18,6 +18,8 @@ jobs:
         run: python tools/validate.py
       - name: Generated references are up to date
         run: python tools/gen_config_refs.py --check
+      - name: Compatibility matrix is up to date
+        run: python tools/gen_matrix.py --check
       - name: Check links
         run: python tools/check_links.py --external
 

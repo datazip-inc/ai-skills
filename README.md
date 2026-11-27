@@ -57,7 +57,8 @@ that are on `staging` and not yet released.
 1. Copy `template/SKILL.md.tmpl` to `olake/<group>/<skill-name>/SKILL.md`. The folder name must match
    `name` in the frontmatter.
 2. Add the skill path to `olake/.claude-plugin/plugin.json` once it is written. Drafts (`TODO` in
-   `description`) stay out of it, so they do not ship.
+   `description`) stay out of it, so they do not ship. Then run `python tools/gen_matrix.py` to add it
+   to `olake/olake-protocol/references/compatibility-matrix.md`; never edit that file by hand.
 
 `OLAKE_VERSION` at the repo root is the one
 [olake-go release](https://github.com/datazip-inc/olake-go/releases) every skill is verified against.
@@ -67,5 +68,6 @@ After re-checking the skills against a new release, bump it there; no skill carr
    ```bash
    pip install -r tools/requirements.txt
    python tools/validate.py
+   python tools/gen_matrix.py --check
    python tools/check_links.py
    ```
