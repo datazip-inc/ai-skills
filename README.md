@@ -37,6 +37,13 @@ The `olake/` folder mirrors the [olake-go repo](https://github.com/datazip-inc/o
 | `olake/olake-protocol/` | `olake-protocol` | Base skill: spec, check, discover, sync, clear and verify for any source and destination |
 | `olake/drivers/olake-driver-abstract/` | `olake-driver-abstract` | Shared source behaviour: sync modes, backfill, CDC, incremental, prerequisites |
 | `olake/drivers/olake-driver-postgres/` | `olake-driver-postgres` | Postgres source |
+| `olake/drivers/olake-driver-mysql/` | `olake-driver-mysql` | MySQL source |
+| `olake/drivers/olake-driver-mongodb/` | `olake-driver-mongodb` | MongoDB source |
+| `olake/drivers/olake-driver-mssql/` | `olake-driver-mssql` | SQL Server source |
+| `olake/drivers/olake-driver-oracle/` | `olake-driver-oracle` | Oracle source |
+| `olake/drivers/olake-driver-db2/` | `olake-driver-db2` | DB2 source |
+| `olake/drivers/olake-driver-s3/` | `olake-driver-s3` | S3 source |
+| `olake/drivers/olake-driver-kafka/` | `olake-driver-kafka` | Kafka source |
 | `olake/destination/olake-destination-abstract/` | `olake-destination-abstract` | Shared writer behaviour: normalization, partitioning, writer errors |
 | `olake/destination/olake-destination-iceberg/` | `olake-destination-iceberg` | Iceberg destination: catalogs, storage, deletes |
 | `olake/deploy/olake-deploy-docker-compose/` | `olake-deploy-docker-compose` | Run OLake locally with docker compose |
