@@ -3,31 +3,36 @@
 Agent skills for [OLake](https://github.com/datazip-inc/olake-go), written in the open
 [`SKILL.md`](https://agentskills.io) format used by Claude Code, Cursor, Codex, Cortex Code and others.
 
-The skills cover two uses:
-
-- **Run OLake end to end**: deploy, connect a source, configure a destination, sync, verify and
-  troubleshoot, guided by your agent.
-- **Develop OLake features**: plan and deliver a change across `olake`, `olake-ui`, `olake-helm` and
-  `olake-docs`, and keep the skills in step with each release.
+With these skills your agent runs OLake end to end: deploy, connect a source, configure a destination,
+sync, verify and troubleshoot. It writes the configs, runs the OLake Docker images, and reads short
+summaries of the logs instead of the whole output.
 
 ## Install
 
-Claude Code:
+Pick one. Each needs only `docker`, `bash` and `python3` on the machine.
 
-```text
-/plugin marketplace add datazip-inc/ai-skills
-/plugin install olake@olake-ai-skills
-```
+| Agent | Install |
+| --- | --- |
+| Claude Code | `/plugin marketplace add datazip-inc/ai-skills`, then `/plugin install olake@olake-ai-skills` |
+| Cursor, Codex, Copilot, Cortex Code and other `SKILL.md` agents | `npx skills add datazip-inc/ai-skills` |
+| Any agent, no install | `git clone https://github.com/datazip-inc/ai-skills && cd ai-skills`, then start the agent there. `AGENTS.md` (and `CLAUDE.md`) point it to the skills. |
+| Any agent that can fetch URLs | Ask it: "Install the OLake skills from https://github.com/datazip-inc/ai-skills" |
 
-Any agent that supports the skills CLI:
+The Claude Code plugin also adds `/olake-poc` and `/olake-debug`, and a prompt hook that points the agent
+to `olake-protocol` the first time a prompt mentions OLake, or Iceberg or Parquet with a source or a sync.
 
-```bash
-npx skills add datazip-inc/ai-skills
-```
+## Use
 
-Then ask your agent, for example: "Set up OLake to replicate my Postgres to Iceberg with a REST catalog
-on MinIO". In Claude Code, `/olake-poc postgres to iceberg` starts the same flow, and `/olake-debug <log>`
-finds why a run failed.
+Ask your agent, for example:
+
+- "Set up OLake to replicate my Postgres to Iceberg with a REST catalog on MinIO."
+- "Run a CDC sync from MySQL to Parquet on S3 and check the row counts."
+- "My OLake sync failed, here is the log: ..."
+
+In Claude Code, `/olake-poc postgres to iceberg` starts the POC flow, and `/olake-debug <log>` finds why a
+run failed.
+
+The skills write secrets as placeholders, never print them, and ask before anything that deletes data.
 
 ## Skill map
 
