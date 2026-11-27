@@ -12,6 +12,13 @@
     "./olake-protocol",
     "./drivers/olake-driver-abstract",
     "./drivers/olake-driver-postgres",
+    "./drivers/olake-driver-mysql",
+    "./drivers/olake-driver-mongodb",
+    "./drivers/olake-driver-mssql",
+    "./drivers/olake-driver-oracle",
+    "./drivers/olake-driver-db2",
+    "./drivers/olake-driver-s3",
+    "./drivers/olake-driver-kafka",
     "./destination/olake-destination-abstract",
     "./destination/olake-destination-iceberg",
     "./olake-troubleshoot"
