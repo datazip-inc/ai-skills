@@ -1,6 +1,6 @@
 ---
 name: olake-deploy-docker-compose
-description: "Run the OLake UI stack on one machine with olake-ui's docker-compose-v1.yml: prerequisites, one-command start, login, admin credentials, encryption key, data directory, external Postgres or Temporal, private registry, retention, logs, ports, upgrade, reset and teardown. Use when the user wants OLake with a web UI on a laptop or single VM, when olake-ui does not start or log in, when jobs cannot reach a source from the compose stack, or when upgrading or removing a compose install."
+description: "Run OLake with its web UI on one machine with docker compose: start, login, admin user, encryption key, data folder, ports, logs, upgrade, reset, teardown. Use for OLake UI on a laptop or VM, or when olake-ui does not start, log in or reach a source."
 metadata:
   parent: olake-protocol
   status: experimental

@@ -1,6 +1,6 @@
 ---
 name: olake-deploy-helm
-description: "Run OLake UI on Kubernetes with the olake-helm chart: prerequisites, helm install, values (admin user, encryption, external Postgres or Temporal, private registry), UI access by port-forward or ingress, shared storage (NFS or S3), job pods (scheduling, resources, cloud IAM, extra volumes, per-job index volumes), logs, upgrade and uninstall. Use when the user deploys OLake to EKS, GKE, AKS or another cluster, when olake pods or job pods fail, or when upgrading or removing a Helm install."
+description: "Run OLake UI on Kubernetes (EKS, GKE, AKS) with the olake-helm chart: install, values, UI access, NFS or S3 storage, job pod resources and cloud IAM, logs, upgrade, uninstall. Use for a Kubernetes install, or when olake pods or job pods fail."
 metadata:
   parent: olake-protocol
   status: experimental

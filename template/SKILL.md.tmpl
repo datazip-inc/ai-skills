@@ -2,6 +2,7 @@
 name: olake-<area>-<name>        # must match the folder name
 description: "<What the skill does, in one sentence.> Use when <triggers - user intent, source/destination
   names, cloud variants, error strings the agent may see>."   # quote it: a ': ' inside breaks YAML
+  # at most 300 chars: it is loaded into every session. Say what the skill does and its triggers only.
 metadata:
   parent: olake-protocol          # or olake-driver-abstract / olake-destination-abstract
   status: experimental            # stable | experimental
@@ -32,6 +33,9 @@ Ask only for what is missing. Never echo secrets back.
 
 1. <One command, config snippet or UI action per step.>
 2. <Next step.>
+
+<!-- When a step runs commands, call a script in scripts/ that prints a short summary (stage, pass or
+fail, counts, the deciding log line) instead of asking the agent to read whole logs. -->
 
 ## Verify
 

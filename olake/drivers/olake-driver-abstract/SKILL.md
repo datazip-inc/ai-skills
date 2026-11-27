@@ -1,6 +1,6 @@
 ---
 name: olake-driver-abstract
-description: "Source behaviour shared by every OLake driver (mirrors drivers/abstract): how full_refresh, incremental, cdc and strict_cdc read, which mode discover picks, chunked backfill and resume, cursor fields, CDC prerequisites checks, and where each driver's own setup lives. Use when choosing or changing a sync mode or cursor, when a backfill or CDC run stops or restarts, when check reports failed prerequisites, or when a source has no driver skill yet."
+description: "Source behaviour shared by every OLake driver: full_refresh, incremental, cdc and strict_cdc, chunked backfill and resume, cursor fields, CDC prerequisite checks. Use when picking a sync mode or cursor, when a backfill or CDC run stops or restarts, or when check reports failed prerequisites."
 metadata:
   parent: olake-protocol
   status: experimental

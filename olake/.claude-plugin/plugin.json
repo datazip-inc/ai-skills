@@ -16,6 +16,7 @@
     "./destination/olake-destination-iceberg",
     "./destination/olake-destination-parquet",
     "./deploy/olake-deploy-docker-compose",
-    "./deploy/olake-deploy-helm"
+    "./deploy/olake-deploy-helm",
+    "./olake-troubleshoot"
   ]
 }

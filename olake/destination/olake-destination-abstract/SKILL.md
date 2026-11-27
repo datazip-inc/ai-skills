@@ -1,6 +1,6 @@
 ---
 name: olake-destination-abstract
-description: "Writer behaviour shared by OLake destinations (mirrors destination/): Iceberg vs Parquet, normalization, partition_regex, append vs upsert, delete formats (eq, pos, dv) and target query engines, the _olake_* columns, schema evolution, and writer errors. Use when the user configures destination.json, sets normalization, partitioning, append_mode or update_type in selected_streams.json, asks why a table has duplicates or a data column, or a sync fails while writing."
+description: "Writer behaviour shared by OLake destinations: normalization, partition_regex, append vs upsert, delete formats (eq, pos, dv), the _olake_* columns, schema evolution, writer errors. Use when a table has duplicates or one data column, or a sync fails while writing."
 metadata:
   parent: olake-protocol
   status: experimental
