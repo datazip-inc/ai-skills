@@ -14,6 +14,8 @@
     "./drivers/olake-driver-postgres",
     "./destination/olake-destination-abstract",
     "./destination/olake-destination-iceberg",
-    "./destination/olake-destination-parquet"
+    "./destination/olake-destination-parquet",
+    "./deploy/olake-deploy-docker-compose",
+    "./deploy/olake-deploy-helm"
   ]
 }
