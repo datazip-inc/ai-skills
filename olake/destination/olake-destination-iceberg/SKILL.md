@@ -1,6 +1,6 @@
 ---
 name: olake-destination-iceberg
-description: "Write OLake syncs to Apache Iceberg: destination.json, a local REST catalog + MinIO stack for a POC, where the tables land, and a check through the REST API. Use when the destination is Iceberg, the user needs a local Iceberg setup, or asks where the synced tables are."
+description: "Write OLake syncs to Apache Iceberg on any catalog (REST, Glue, Hive, JDBC, Lakekeeper, Nessie, Polaris, Unity, S3 Tables, BigLake, Horizon) and S3, MinIO, GCS or ADLS, plus a local POC stack with Trino. Use when the destination is Iceberg, or to find or query the synced tables."
 metadata:
   parent: olake-destination-abstract
   status: experimental
@@ -9,17 +9,31 @@ metadata:
 # Iceberg destination
 
 `"type": "ICEBERG"` in `destination.json`. Every source image writes it; nothing extra to install.
-This skill covers the REST catalog on MinIO or S3. How OLake writes (columns, upserts, deletes,
-partitioning) is in `olake-destination-abstract`. The run is in `olake-protocol`.
+How OLake writes (columns, upserts, deletes, partitioning) is in `olake-destination-abstract`. The run
+is in `olake-protocol`.
+
+| Catalog | `catalog_type` | Guide |
+| --- | --- | --- |
+| Generic REST (local POC stack, Tabular, Gravitino) | `rest` | [references/catalogs/rest.md](references/catalogs/rest.md) |
+| AWS Glue | `glue` | [references/catalogs/glue.md](references/catalogs/glue.md) |
+| Hive Metastore, Dataproc Metastore | `hive` | [references/catalogs/hive.md](references/catalogs/hive.md) |
+| JDBC (Postgres, MySQL) | `jdbc` | [references/catalogs/jdbc.md](references/catalogs/jdbc.md) |
+| Lakekeeper | `lakekeeper` | [references/catalogs/lakekeeper.md](references/catalogs/lakekeeper.md) |
+| Nessie | `nessie` | [references/catalogs/nessie.md](references/catalogs/nessie.md) |
+| Apache Polaris, Snowflake Open Catalog | `polaris` | [references/catalogs/polaris.md](references/catalogs/polaris.md) |
+| Databricks Unity Catalog | `unity` | [references/catalogs/unity.md](references/catalogs/unity.md) |
+| Amazon S3 Tables | `s3tables` | [references/catalogs/s3-tables.md](references/catalogs/s3-tables.md) |
+| Google BigLake metastore | `biglake` | [references/catalogs/biglake.md](references/catalogs/biglake.md) |
+| Snowflake Horizon | `horizon` | [references/catalogs/horizon.md](references/catalogs/horizon.md) |
+
+Storage: [S3](references/storage/s3.md), [MinIO](references/storage/minio.md),
+[GCS](references/storage/gcs.md), [Azure ADLS Gen2](references/storage/azure.md).
 
 ## When to use
 
-- The destination is Iceberg with a REST catalog, on MinIO or S3.
-- The user has no Iceberg setup and wants a local one for a POC.
-- `check --destination` fails, or the user cannot find the synced tables.
-- Other catalogs (Glue, Hive, JDBC, Polaris, Lakekeeper, Nessie, Unity, S3 Tables, BigLake): fields in
-  [references/config.md](references/config.md) and the
-  [Iceberg catalog docs](https://olake.io/docs/writers/iceberg/catalog/overview).
+- The destination is Iceberg, with any catalog in the table above.
+- The user has no Iceberg setup and wants a local one for a POC: use the REST + MinIO stack.
+- `check --destination` fails, or the user cannot find or query the synced tables.
 
 ## Inputs to collect
 
@@ -27,7 +41,7 @@ Ask only for what is missing. Never echo a key back.
 
 | Input | Example | Where it comes from |
 | --- | --- | --- |
-| Existing catalog, or local POC stack? | existing / local | User |
+| Existing catalog, or local POC stack? | existing / local | User. Existing: which catalog (table above). |
 | `rest_catalog_url` | `http://iceberg-rest:8181` | User, or the local stack |
 | `iceberg_s3_path` | `s3://warehouse/olake` | User. Bucket must exist. |
 | `s3_endpoint` | `http://minio:9000` | MinIO only. Leave out for AWS S3. |
@@ -51,7 +65,8 @@ Ask only for what is missing. Never echo a key back.
    Port taken: `MINIO_PORT=19000 MINIO_CONSOLE_PORT=19001 REST_PORT=18181 docker compose ... up -d`,
    then use `18181` in the curl and verify commands. Run every OLake command with `--network olake-poc`.
    If the source database runs in Docker too, attach it: `docker network connect olake-poc <container>`.
-2. Write `destination.json`. For the local stack:
+   To query the tables later, add Trino: `--profile query` on the same `up -d` (2 GB memory).
+2. Write `destination.json`. Existing catalog: take the example from its guide. For the local stack:
    ```json
    {
      "type": "ICEBERG",
@@ -77,8 +92,21 @@ Ask only for what is missing. Never echo a key back.
 
 ## Where the tables land
 
-- Namespace: `destination_database` from `discover`, reformatted: `<source>_<database>_<schema>`,
-  for example `postgres_shop_public`. `iceberg_db` is used only when `destination_database` is empty.
+- Namespace: `destination_database` from `discover`, reformatted: `<source>_<database>_<schema>`.
+  `iceberg_db` is used only when `destination_database` is empty. Seen on v1.1.2:
+
+  | Source | Namespace |
+  | --- | --- |
+  | Postgres `shop`, schema `public` | `postgres_shop_public` |
+  | MySQL `shop` | `mysql_shop` |
+  | MongoDB `shop` | `mongodb_shop` |
+  | MSSQL `shop`, schema `dbo` | `mssql_shop_dbo` |
+  | Oracle, owner `OLAKE` | `oracle_olake` |
+  | Db2 `SHOP`, schema `DB2INST1` | `db2_shop_db2inst1` |
+  | S3 bucket `src` | `s3_src_s3` |
+  | Kafka | `kafka_topics` |
+
+  Nessie lists the tables under the branch prefix `main`.
 - Table: the source table name, lower-cased, non `a-z 0-9` characters as `_`.
 - Extra columns: `_olake_id`, `_olake_timestamp`, `_op_type`, and with CDC `_cdc_timestamp` plus a
   source position column (`_cdc_lsn` on Postgres).
@@ -92,8 +120,10 @@ python3 scripts/verify_iceberg.py http://localhost:8181 postgres_shop_public    
 
 - The table is listed, and `records` equals the source row count after the first sync.
 - After a CDC change and a rerun with `--state`, `records` grows by the changed rows.
-- With deletes or upserts, `records` counts rows before deletes: compare with a query engine
-  (`SELECT COUNT(*) FROM <catalog>.<namespace>.<table>`).
+- With deletes or upserts, `records` counts rows before deletes. Count live rows with an engine:
+  `WHERE _op_type <> 'd'`. Local stack: start the bundled Trino with `--profile query`
+  ([references/query-engines.md](references/query-engines.md)).
+- Glue and other non-REST catalogs: query with an engine; the script reads REST catalogs only.
 
 ## Common errors
 
@@ -102,13 +132,16 @@ python3 scripts/verify_iceberg.py http://localhost:8181 postgres_shop_public    
 | `rest_catalog_url is required when using REST catalog` | Missing field | Set `rest_catalog_url`. |
 | `connection refused` / `UnknownHostException` to the catalog or MinIO | Wrong host from inside the container | Service names with `--network olake-poc`; `host.docker.internal` for host services. |
 | `NoSuchBucket` | Bucket in `iceberg_s3_path` missing | Create it (local stack: `mc` creates `warehouse`). |
-| `Bind for 0.0.0.0:9000 failed: port is already allocated` | Host port taken | Set `MINIO_PORT`, `MINIO_CONSOLE_PORT`, `REST_PORT` (step 1). |
+| `Bind for 0.0.0.0:9000 failed: port is already allocated` | Host port taken | Set `MINIO_PORT`, `MINIO_CONSOLE_PORT`, `REST_PORT`, `TRINO_PORT` (step 1). |
+| First sync with several streams: `ERROR` with `duplicate key ... iceberg_namespace_properties_pkey` or `Failed to execute: INSERT INTO iceberg_namespace_properties`, then `retrying after 60.00 seconds` | Streams create the same namespace at once | None: the retry succeeds and the sync completes. |
+| MongoDB, S3 or Kafka table has one column `data` | `normalization` is `false` by default for them | Set `"normalization": true` on the stream, `clear-destination`, sync. |
 
 Writer errors (Java, gRPC, permissions): `olake-destination-abstract`.
 
 ## Next
 
 - Upserts, delete formats, partitioning: `olake-destination-abstract`.
+- Query the tables: [references/query-engines.md](references/query-engines.md).
 - Every field: [references/config.md](references/config.md).
 
 ## Rules

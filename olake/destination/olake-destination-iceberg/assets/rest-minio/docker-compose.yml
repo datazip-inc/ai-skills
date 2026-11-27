@@ -61,6 +61,34 @@ services:
     volumes:
       - catalog-data:/catalog
 
+  # Query engine for the synced tables. Start with: docker compose --profile query up -d
+  # Query: docker exec -it olake-trino trino --catalog iceberg
+  trino:
+    image: trinodb/trino:482
+    container_name: olake-trino
+    profiles: ["query"]
+    depends_on:
+      - iceberg-rest
+    mem_limit: 2g
+    ports:
+      - "${TRINO_PORT:-8080}:8080"
+    configs:
+      - source: trino-iceberg
+        target: /etc/trino/catalog/iceberg.properties
+
+configs:
+  trino-iceberg:
+    content: |
+      connector.name=iceberg
+      iceberg.catalog.type=rest
+      iceberg.rest-catalog.uri=http://iceberg-rest:8181
+      fs.native-s3.enabled=true
+      s3.endpoint=http://minio:9000
+      s3.region=us-east-1
+      s3.path-style-access=true
+      s3.aws-access-key=admin
+      s3.aws-secret-key=password
+
 volumes:
   minio-data:
   catalog-data:

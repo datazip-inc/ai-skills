@@ -23,7 +23,7 @@ Ask only for what is missing. Check the combination against
 
 | Input | Example | Where it comes from |
 | --- | --- | --- |
-| Run mode | `cli` | This release covers the CLI only. If the user asks for the OLake UI, say these skills do not cover it yet and point to https://olake.io/docs. |
+| Run mode | `cli`, `ui` | User. `cli`: the steps below. `ui`: deploy with `olake-deploy-docker-compose` (one machine) or `olake-deploy-helm` (Kubernetes), then [references/ui.md](references/ui.md). |
 | Source type | `postgres` | One of `postgres mysql mongodb mssql oracle db2 s3 kafka`. |
 | Source connection | host, port, database, user, `<PASSWORD>` | User. Field list in the driver skill. |
 | Destination type | `iceberg` or `parquet` | User. |

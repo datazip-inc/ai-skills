@@ -45,6 +45,7 @@ The `olake/` folder mirrors the [olake-go repo](https://github.com/datazip-inc/o
 | `olake/drivers/olake-driver-postgres/` | `olake-driver-postgres` | Postgres source |
 | `olake/destination/olake-destination-abstract/` | `olake-destination-abstract` | Shared writer behaviour: normalization, partitioning, writer errors |
 | `olake/destination/olake-destination-iceberg/` | `olake-destination-iceberg` | Iceberg destination: catalogs, storage, deletes |
+| `olake/destination/olake-destination-parquet/` | `olake-destination-parquet` | Parquet destination: local or object storage, partition folders |
 | `olake/deploy/olake-deploy-docker-compose/` | `olake-deploy-docker-compose` | Run OLake locally with docker compose |
 | `olake/deploy/olake-deploy-helm/` | `olake-deploy-helm` | Run OLake on Kubernetes with the Helm chart |
 | `olake/olake-troubleshoot/` | `olake-troubleshoot` | Logs, stage triage, error to fix |
