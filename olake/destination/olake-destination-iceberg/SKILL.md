@@ -1,6 +1,6 @@
 ---
 name: olake-destination-iceberg
-description: "Write OLake syncs to Apache Iceberg (mirrors destination/iceberg): destination.json for a REST catalog on MinIO or S3, a local REST catalog + MinIO stack for a POC, the namespace and table names OLake creates, and a read-only check of the written tables through the REST API. Use when the destination is Iceberg, the user needs a local Iceberg setup to try OLake, or asks where the synced tables are."
+description: "Write OLake syncs to Apache Iceberg: destination.json, a local REST catalog + MinIO stack for a POC, where the tables land, and a check through the REST API. Use when the destination is Iceberg, the user needs a local Iceberg setup, or asks where the synced tables are."
 metadata:
   parent: olake-destination-abstract
   status: experimental

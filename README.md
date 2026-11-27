@@ -26,7 +26,8 @@ npx skills add datazip-inc/ai-skills
 ```
 
 Then ask your agent, for example: "Set up OLake to replicate my Postgres to Iceberg with a REST catalog
-on MinIO".
+on MinIO". In Claude Code, `/olake-poc postgres to iceberg` starts the same flow, and `/olake-debug <log>`
+finds why a run failed.
 
 ## Skill map
 

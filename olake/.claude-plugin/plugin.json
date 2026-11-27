@@ -13,6 +13,7 @@
     "./drivers/olake-driver-abstract",
     "./drivers/olake-driver-postgres",
     "./destination/olake-destination-abstract",
-    "./destination/olake-destination-iceberg"
+    "./destination/olake-destination-iceberg",
+    "./olake-troubleshoot"
   ]
 }
